@@ -227,29 +227,7 @@
     .management-summary th { background: #e7f0f7; }
     .management-summary td { font-size: 14px; }
     .management-summary .amount-cell { text-align: right; font-weight: 900; white-space: nowrap; }
-
-
-    .lot-direct-action {
-      margin-top: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 14px 16px;
-      background: #fff;
-      border: 1px solid var(--borde);
-      border-left: 6px solid #005b96;
-      border-radius: 12px;
-      box-shadow: var(--sombra);
-    }
-    .lot-direct-action strong { display: block; font-size: 18px; color: #123d5b; }
-    .lot-direct-action span { display: block; margin-top: 4px; color: var(--muted); font-weight: 700; font-size: 14px; }
-    @media (max-width: 720px) {
-      .lot-direct-action { align-items: stretch; flex-direction: column; }
-      .lot-direct-action .btn { width: 100%; }
-    }
-
-    .lot-launcher {
+.lot-launcher {
       margin-top: 14px;
       padding: 22px;
       background: #fff;
@@ -593,7 +571,7 @@
     </section>
 
     <nav class="tabs" aria-label="Bandejas de Jefatura">
-      <button id="tabSolicitudes" class="tab active" onclick="cambiarTab('solicitudes')">SOLICITUDES <span id="countSolicitudes" class="tab-count">0</span></button>
+      <button id="tabSolicitudes" class="tab active" onclick="abrirSolicitudesDesdeTab()">SOLICITUDES <span id="countSolicitudes" class="tab-count">0</span></button>
       <button id="tabReautorizaciones" class="tab" onclick="cambiarTab('reautorizaciones')">REAUTORIZACIONES <span id="countReautorizaciones" class="tab-count">0</span></button>
       <button id="tabManuales" class="tab" onclick="cambiarTab('manuales')">OC MANUALES <span id="countManuales" class="tab-count">0</span></button>
     </nav>
@@ -900,7 +878,7 @@
       if (!PANEL) return;
 
       const titles = {
-        solicitudes: ['Solicitudes del lote vigente', 'Abre el lote completo para revisar todas las OC en una sola pantalla.'],
+        solicitudes: ['Solicitudes del lote vigente', 'Pendientes de decisión de Jefatura provenientes de MATRIZ OC.'],
         reautorizaciones: ['Reautorizaciones', 'Cambios de proveedor, precio o cantidad propuestos por Compras.'],
         manuales: ['OC manuales', 'Solicitudes nuevas creadas por Compras y pendientes de Jefatura.']
       };
@@ -916,18 +894,7 @@
         });
 
         empty.style.display = solicitudes.length ? 'none' : 'block';
-        if (!solicitudes.length) return;
-
-        const action = document.createElement('div');
-        action.className = 'lot-direct-action';
-        action.innerHTML = `
-          <div>
-            <strong>${escapeHtml(PANEL.loteVigente || 'LOTE VIGENTE')}</strong>
-            <span>${solicitudes.length} OC pendiente(s) provenientes de MATRIZ OC</span>
-          </div>
-          <button class="btn btn-primary" onclick="abrirLote()">ABRIR SOLICITUDES DEL LOTE</button>
-        `;
-        container.appendChild(action);
+        container.innerHTML = '';
         return;
       }
 
@@ -967,6 +934,26 @@
         `;
         container.appendChild(card);
       });
+    }
+
+    async function abrirSolicitudesDesdeTab() {
+      TAB_ACTUAL = 'solicitudes';
+
+      ['solicitudes','reautorizaciones','manuales'].forEach(function(name) {
+        const id = name === 'solicitudes' ? 'tabSolicitudes' : name === 'reautorizaciones' ? 'tabReautorizaciones' : 'tabManuales';
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('active', name === 'solicitudes');
+      });
+
+      document.getElementById('buscador').value = '';
+
+      if (!PANEL || !(PANEL.solicitudes || []).length) {
+        renderLista();
+        aviso('No existen solicitudes pendientes del lote vigente.');
+        return;
+      }
+
+      await abrirLote();
     }
 
     async function abrirLote() {
