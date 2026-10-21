@@ -486,6 +486,93 @@
     .spinner { width: 38px; height: 38px; margin: 0 auto 13px; border: 5px solid #e4e7ec; border-top-color: var(--azul); border-radius: 50%; animation: spin .8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+
+    /* =========================================================
+       PATRÓN VISUAL DE DECISIÓN
+       AZUL = SOLICITUDES
+       NARANJO = REAUTORIZACIONES
+       MORADO = OC MANUALES
+       VERDE = RESULTADO YA CONFIRMADO
+       ========================================================= */
+    .detail-overlay.theme-normal {
+      --decision-color: #184f78;
+      --decision-soft: #e8f0f7;
+      --decision-border: #b9cedd;
+      --decision-text: #123d5b;
+    }
+    .detail-overlay.theme-reauth {
+      --decision-color: #f28c00;
+      --decision-soft: #fff0dc;
+      --decision-border: #efc27d;
+      --decision-text: #633b00;
+    }
+    .detail-overlay.theme-manual {
+      --decision-color: #7e3db5;
+      --decision-soft: #f1e8f8;
+      --decision-border: #c9a7e1;
+      --decision-text: #4d2370;
+    }
+
+    .detail-overlay .detail-topbar {
+      border-bottom: 5px solid var(--decision-color, #184f78);
+    }
+    .detail-overlay .detail-topbar h2 {
+      color: var(--decision-color, #184f78);
+    }
+    .detail-overlay .panel h3 {
+      color: var(--decision-color, #184f78);
+      border-bottom: 2px solid var(--decision-border, #b9cedd);
+      padding-bottom: 8px;
+    }
+    .detail-overlay .management-box {
+      background: var(--decision-soft, #eef6fb);
+      border-color: var(--decision-border, #bfd8e8);
+    }
+    .detail-overlay .management-item {
+      border-color: var(--decision-border, #d6e5ef);
+    }
+    .detail-overlay .detail-table-head th,
+    .detail-overlay #detailTableHead th {
+      background: var(--decision-soft, #e8f0f7);
+      color: var(--decision-text, #17324b);
+      border-bottom-color: var(--decision-border, #c8d8e5);
+    }
+    .detail-overlay .detail-actions {
+      border-top: 5px solid var(--decision-color, #184f78);
+    }
+
+    .detail-overlay .btn-context {
+      background: var(--decision-color, #184f78);
+      color: #fff;
+    }
+    .detail-overlay .btn-edit-context {
+      background: var(--decision-soft, #eef4f8);
+      color: var(--decision-text, #184f78);
+      border: 1px solid var(--decision-border, #cadce8);
+    }
+
+    .detail-qty {
+      width: 112px;
+      min-height: 48px;
+      padding: 8px 10px;
+      border: 2px solid #c8d2dc;
+      border-radius: 9px;
+      text-align: center;
+      font-weight: 900;
+      background: #f2f4f7;
+      color: #475467;
+    }
+    .detail-qty.editable {
+      background: #fff7cf;
+      color: #3f3500;
+      border-color: var(--decision-color, #184f78);
+    }
+    .readonly-price {
+      font-weight: 900;
+      color: #344054;
+      background: #f7f8fa;
+    }
+
     .detail-overlay {
       display: none;
       position: fixed;
@@ -581,6 +668,17 @@
       overflow-y: auto;
     }
     .decision-overlay.visible { display: flex; align-items: center; justify-content: center; }
+
+    .decision-overlay.theme-normal { --decision-color: #184f78; --decision-soft: #e8f0f7; }
+    .decision-overlay.theme-reauth { --decision-color: #f28c00; --decision-soft: #fff0dc; }
+    .decision-overlay.theme-manual { --decision-color: #7e3db5; --decision-soft: #f1e8f8; }
+    .decision-overlay .decision-modal {
+      border-top: 8px solid var(--decision-color, #184f78);
+    }
+    .decision-overlay .decision-modal h3 {
+      color: var(--decision-color, #184f78);
+    }
+
     .decision-modal { width: min(620px, 100%); background: #fff; border-radius: 16px; padding: 22px; box-shadow: 0 20px 50px rgba(0,0,0,.25); }
     .decision-modal h3 { margin: 0; font-size: 22px; }
     .decision-modal p { color: #475467; line-height: 1.5; }
@@ -843,9 +941,9 @@
     <footer id="detailActions" class="detail-actions" style="display:none">
       <div class="detail-actions-inner">
         <button class="btn btn-light" onclick="cerrarDetalle()">VOLVER</button>
-        <button id="btnEditar" class="btn btn-primary" onclick="alternarEdicion()">EDITAR CANTIDADES</button>
+        <button id="btnEditar" class="btn btn-edit-context" onclick="alternarEdicion()">EDITAR CANTIDADES</button>
         <button id="btnRechazar" class="btn btn-red" onclick="abrirRechazo()">RECHAZAR</button>
-        <button id="btnAutorizar" class="btn btn-green" onclick="autorizarActual()">AUTORIZAR</button>
+        <button id="btnAutorizar" class="btn btn-context" onclick="autorizarActual()">AUTORIZAR</button>
       </div>
     </footer>
   </section>
@@ -1484,27 +1582,60 @@
     function renderDetalle() {
       const d = DETALLE;
       if (!d) return;
-      setText('detailTitle', d.tipo === 'REAUTORIZACION' ? 'Reautorización de Jefatura' : d.tipo === 'MANUAL' ? 'Revisión de OC manual' : 'Aprobación de Orden de Compra');
+
+      const overlay = document.getElementById('detailOverlay');
+      overlay.classList.remove('theme-normal', 'theme-reauth', 'theme-manual');
+      overlay.classList.add(
+        d.tipo === 'REAUTORIZACION'
+          ? 'theme-reauth'
+          : d.tipo === 'MANUAL'
+            ? 'theme-manual'
+            : 'theme-normal'
+      );
+
+      setText(
+        'detailTitle',
+        d.tipo === 'REAUTORIZACION'
+          ? 'Reautorización de Jefatura'
+          : d.tipo === 'MANUAL'
+            ? 'Autorización de OC manual'
+            : 'Aprobación de Orden de Compra'
+      );
+
       setText('detailSubtitle', (d.oc || '') + ' · ' + (d.proveedorPropuesto || d.proveedorOriginal || ''));
       setText('dOc', d.oc || '-');
       setText('dEmpresa', d.empresa || '-');
       setText('dLote', d.lote || 'SIN LOTE');
       setText('dFecha', d.fechaEmision || '-');
-      setText('dAreas', Array.isArray(d.areas) && d.areas.length ? d.areas.join(' / ') : d.tipo === 'MANUAL' ? 'SOLICITUD MANUAL' : '-');
+      setText('dAreas', Array.isArray(d.areas) && d.areas.length
+        ? d.areas.join(' / ')
+        : d.tipo === 'MANUAL'
+          ? 'SOLICITUD MANUAL'
+          : d.tipo === 'REAUTORIZACION'
+            ? 'REAUTORIZACIÓN'
+            : '-'
+      );
       setText('dEstado', d.estado || 'PENDIENTE');
       setText('dProveedorOriginal', d.proveedorOriginal || '-');
+
       const proposedWrap = document.getElementById('dProveedorPropuestoWrap');
-      proposedWrap.style.display = d.proveedorPropuesto ? 'block' : 'none';
+
+      // Reautorizaciones muestran el proveedor propuesto porque es parte
+      // de la decisión, pero no es editable desde Jefatura.
+      proposedWrap.style.display = d.tipo === 'REAUTORIZACION' && d.proveedorPropuesto ? 'block' : 'none';
       setText('dProveedorPropuesto', d.proveedorPropuesto || '-');
+
       renderGestion();
       renderTablaDetalle();
       recalcularDetalle();
 
       const editBtn = document.getElementById('btnEditar');
-      editBtn.style.display = d.tipo === 'NORMAL' ? 'block' : 'none';
+      editBtn.style.display = 'block';
       editBtn.textContent = 'EDITAR CANTIDADES';
-      document.getElementById('btnAutorizar').textContent = d.tipo === 'REAUTORIZACION' ? 'AUTORIZAR CAMBIO' : 'AUTORIZAR';
-      document.getElementById('btnRechazar').textContent = d.tipo === 'REAUTORIZACION' ? 'RECHAZAR CAMBIO' : 'RECHAZAR';
+
+      document.getElementById('btnAutorizar').textContent = 'AUTORIZAR';
+      document.getElementById('btnRechazar').textContent = 'RECHAZAR';
+
       document.getElementById('detailContent').style.display = 'grid';
       document.getElementById('detailActions').style.display = 'block';
     }
@@ -1513,7 +1644,7 @@
       const d = DETALLE;
       const container = document.getElementById('gestionContent');
       container.innerHTML = '';
-      setText('gestionTitle', '3. ' + ((d.gestion && d.gestion.titulo) || 'Gestión y trazabilidad'));
+      setText('gestionTitle', '3. Gestión y trazabilidad');
       const items = [];
 
       if (d.tipo === 'NORMAL') {
@@ -1549,6 +1680,7 @@
 
       if (d.tipo === 'NORMAL') {
         head.innerHTML = '<tr><th>Código</th><th>Producto</th><th>Cant. original</th><th>Aprobada área</th><th>Final Jefatura</th><th>Unidad</th><th>Precio</th><th>Neto</th><th>Total c/IVA</th></tr>';
+
         (d.lineas || []).forEach(function(line, index) {
           const row = document.createElement('tr');
           row.innerHTML = `
@@ -1556,9 +1688,9 @@
             <td class="product left">${escapeHtml(line.producto || '')}${line.consolidada ? '<br><small>Consolidada desde más de un área</small>' : ''}</td>
             <td class="center">${formatoNumero(line.cantidadOriginal)}</td>
             <td class="center">${formatoNumero(line.cantidadArea)}</td>
-            <td class="center"><input class="qty-input" data-qty-index="${index}" type="number" min="0" step="any" value="${escapeHtml(String(line.cantidadJefatura))}" readonly oninput="recalcularDetalle()"></td>
+            <td class="center"><input class="detail-qty" data-qty-index="${index}" type="number" min="0" step="any" value="${escapeHtml(String(line.cantidadJefatura))}" readonly oninput="recalcularDetalle()"></td>
             <td class="center">${escapeHtml(line.unidad || '')}</td>
-            <td class="money">${formatoMoneda(line.precio)}</td>
+            <td class="money readonly-price">${formatoMoneda(line.precio)}</td>
             <td id="lineNeto-${index}" class="money">${formatoMoneda(line.neto)}</td>
             <td id="lineBruto-${index}" class="money">${formatoMoneda(line.bruto)}</td>
           `;
@@ -1568,21 +1700,29 @@
       }
 
       if (d.tipo === 'REAUTORIZACION') {
-        head.innerHTML = '<tr><th>Código</th><th>Producto</th><th>Cant. autorizada</th><th>Cant. propuesta</th><th>Unidad</th><th>Precio autorizado</th><th>Precio propuesto</th><th>Neto autorizado</th><th>Neto propuesto</th><th>Diferencia</th></tr>';
-        (d.lineas || []).forEach(function(line) {
-          const differenceClass = Number(line.diferenciaNeta) > 0 ? 'negative' : Number(line.diferenciaNeta) < 0 ? 'positive' : '';
+        head.innerHTML = '<tr><th>Código</th><th>Producto</th><th>Cant. autorizada</th><th>Cant. Jefatura</th><th>Unidad</th><th>Precio autorizado</th><th>Precio propuesto</th><th>Neto final</th><th>Total c/IVA</th></tr>';
+
+        (d.lineas || []).forEach(function(line, index) {
           const row = document.createElement('tr');
           row.innerHTML = `
             <td class="center">${escapeHtml(line.codigo || '')}</td>
             <td class="product left">${escapeHtml(line.producto || '')}</td>
             <td class="center">${formatoNumero(line.cantidadAutorizada)}</td>
-            <td class="center"><strong>${formatoNumero(line.cantidadPropuesta)}</strong></td>
+            <td class="center">
+              <input class="detail-qty"
+                data-qty-index="${index}"
+                type="number"
+                min="0"
+                step="any"
+                value="${escapeHtml(String(line.cantidadPropuesta))}"
+                readonly
+                oninput="recalcularDetalle()">
+            </td>
             <td class="center">${escapeHtml(line.unidad || '')}</td>
-            <td class="money">${formatoMoneda(line.precioAutorizado)}</td>
-            <td class="money"><strong>${formatoMoneda(line.precioPropuesto)}</strong></td>
-            <td class="money">${formatoMoneda(line.netoAutorizado)}</td>
-            <td class="money"><strong>${formatoMoneda(line.netoPropuesto)}</strong></td>
-            <td class="money ${differenceClass}">${formatoDiferencia(line.diferenciaNeta)}</td>
+            <td class="money readonly-price">${formatoMoneda(line.precioAutorizado)}</td>
+            <td class="money readonly-price">${formatoMoneda(line.precioPropuesto)}</td>
+            <td id="lineNeto-${index}" class="money">${formatoMoneda(line.netoPropuesto)}</td>
+            <td id="lineBruto-${index}" class="money">${formatoMoneda(line.netoPropuesto * 1.19)}</td>
           `;
           body.appendChild(row);
         });
@@ -1590,17 +1730,27 @@
       }
 
       head.innerHTML = '<tr><th>Tipo</th><th>Código</th><th>Producto / servicio</th><th>Cantidad</th><th>Unidad</th><th>Precio</th><th>Neto</th><th>Total c/IVA</th><th>Estado código</th></tr>';
-      (d.lineas || []).forEach(function(line) {
+
+      (d.lineas || []).forEach(function(line, index) {
         const row = document.createElement('tr');
         row.innerHTML = `
           <td class="center">${escapeHtml(line.tipoCompra || '')}</td>
           <td class="center">${escapeHtml(line.codigo || '')}</td>
           <td class="product left">${escapeHtml(line.producto || '')}</td>
-          <td class="center">${formatoNumero(line.cantidad)}</td>
+          <td class="center">
+            <input class="detail-qty"
+              data-qty-index="${index}"
+              type="number"
+              min="0"
+              step="any"
+              value="${escapeHtml(String(line.cantidad))}"
+              readonly
+              oninput="recalcularDetalle()">
+          </td>
           <td class="center">${escapeHtml(line.unidad || '')}</td>
-          <td class="money">${formatoMoneda(line.precio)}</td>
-          <td class="money">${formatoMoneda(line.neto)}</td>
-          <td class="money">${formatoMoneda(line.bruto)}</td>
+          <td class="money readonly-price">${formatoMoneda(line.precio)}</td>
+          <td id="lineNeto-${index}" class="money">${formatoMoneda(line.neto)}</td>
+          <td id="lineBruto-${index}" class="money">${formatoMoneda(line.bruto)}</td>
           <td class="center">${escapeHtml(line.estadoCodigo || '-')}</td>
         `;
         body.appendChild(row);
@@ -1608,63 +1758,97 @@
     }
 
     function alternarEdicion() {
-      if (!DETALLE || DETALLE.tipo !== 'NORMAL') return;
+      if (!DETALLE) return;
+
       EDICION = !EDICION;
-      document.querySelectorAll('.qty-input').forEach(function(input, index) {
+
+      document.querySelectorAll('#detailTableBody .detail-qty').forEach(function(input, index) {
         input.readOnly = !EDICION;
         input.classList.toggle('editable', EDICION);
-        if (!EDICION) input.value = DETALLE.lineas[index].cantidadJefatura;
+
+        if (!EDICION) {
+          const line = DETALLE.lineas[index];
+
+          if (DETALLE.tipo === 'NORMAL') {
+            input.value = line.cantidadJefatura;
+          } else if (DETALLE.tipo === 'REAUTORIZACION') {
+            input.value = line.cantidadPropuesta;
+          } else {
+            input.value = line.cantidad;
+          }
+        }
       });
+
       const btn = document.getElementById('btnEditar');
       btn.textContent = EDICION ? 'CANCELAR EDICIÓN' : 'EDITAR CANTIDADES';
+
       if (EDICION) {
-        const first = document.querySelector('.qty-input');
+        const first = document.querySelector('#detailTableBody .detail-qty');
         if (first) first.focus();
       }
+
       recalcularDetalle();
     }
 
     function recalcularDetalle() {
       if (!DETALLE) return;
+
       const grid = document.getElementById('totalsGrid');
       grid.innerHTML = '';
 
-      if (DETALLE.tipo === 'NORMAL') {
-        let neto = 0;
-        (DETALLE.lineas || []).forEach(function(line, index) {
-          const input = document.querySelector('[data-qty-index="' + index + '"]');
-          const qty = input ? Number(String(input.value || '').replace(',', '.')) : Number(line.cantidadJefatura || 0);
-          const lineNet = Number.isFinite(qty) ? qty * Number(line.precio || 0) : 0;
-          const lineBruto = lineNet * 1.19;
-          neto += lineNet;
-          setText('lineNeto-' + index, formatoMoneda(lineNet));
-          setText('lineBruto-' + index, formatoMoneda(lineBruto));
-        });
-        const iva = neto * .19;
-        renderTotales([
-          ['Neto', neto, ''],
-          ['IVA 19%', iva, ''],
-          ['TOTAL', neto + iva, ''],
-          ['Gestión', (DETALLE.lineas || []).length + ' producto(s)', 'text']
-        ]);
-        return;
-      }
+      let neto = 0;
+
+      (DETALLE.lineas || []).forEach(function(line, index) {
+        const input = document.querySelector('#detailTableBody [data-qty-index="' + index + '"]');
+
+        let qtyBase;
+        let price;
+
+        if (DETALLE.tipo === 'NORMAL') {
+          qtyBase = line.cantidadJefatura;
+          price = line.precio;
+        } else if (DETALLE.tipo === 'REAUTORIZACION') {
+          qtyBase = line.cantidadPropuesta;
+          price = line.precioPropuesto;
+        } else {
+          qtyBase = line.cantidad;
+          price = line.precio;
+        }
+
+        const qty = input
+          ? Number(String(input.value || '').replace(',', '.'))
+          : Number(qtyBase || 0);
+
+        const lineNet = Number.isFinite(qty) && qty >= 0
+          ? qty * Number(price || 0)
+          : 0;
+
+        const lineBruto = lineNet * 1.19;
+        neto += lineNet;
+
+        setText('lineNeto-' + index, formatoMoneda(lineNet));
+        setText('lineBruto-' + index, formatoMoneda(lineBruto));
+      });
+
+      const iva = neto * .19;
+      const bruto = neto + iva;
 
       if (DETALLE.tipo === 'REAUTORIZACION') {
+        const base = Number(DETALLE.brutoAutorizado || 0);
         renderTotales([
-          ['Total autorizado', DETALLE.brutoAutorizado || 0, ''],
-          ['Total propuesto', DETALLE.brutoPropuesto || 0, ''],
-          ['Diferencia neta', DETALLE.diferencia || 0, 'difference'],
+          ['Total autorizado anterior', base, ''],
+          ['Total decisión actual', bruto, ''],
+          ['Diferencia', bruto - base, 'difference'],
           ['Productos', (DETALLE.lineas || []).length + ' línea(s)', 'text']
         ]);
         return;
       }
 
       renderTotales([
-        ['Neto', DETALLE.neto || 0, ''],
-        ['IVA 19%', DETALLE.iva || 0, ''],
-        ['TOTAL', DETALLE.bruto || 0, ''],
-        ['Productos', (DETALLE.lineas || []).length + ' línea(s)', 'text']
+        ['Neto', neto, ''],
+        ['IVA 19%', iva, ''],
+        ['TOTAL', bruto, ''],
+        ['Productos', (DETALLE.lineas || []).length + ' producto(s)', 'text']
       ]);
     }
 
@@ -1682,34 +1866,78 @@
     }
 
     function cantidadesActuales() {
-      if (!DETALLE || DETALLE.tipo !== 'NORMAL') return [];
+      if (!DETALLE) return [];
+
       return (DETALLE.lineas || []).map(function(line, index) {
-        const input = document.querySelector('[data-qty-index="' + index + '"]');
+        const input = document.querySelector('#detailTableBody [data-qty-index="' + index + '"]');
+
+        let qtyBase;
+        if (DETALLE.tipo === 'NORMAL') {
+          qtyBase = line.cantidadJefatura;
+        } else if (DETALLE.tipo === 'REAUTORIZACION') {
+          qtyBase = line.cantidadPropuesta;
+        } else {
+          qtyBase = line.cantidad;
+        }
+
+        const qty = input
+          ? Number(String(input.value || '').replace(',', '.'))
+          : Number(qtyBase || 0);
+
+        if (DETALLE.tipo === 'NORMAL') {
+          return {
+            grupoId: line.grupoId,
+            cantidad: qty
+          };
+        }
+
         return {
-          grupoId: line.grupoId,
-          cantidad: input ? Number(String(input.value || '').replace(',', '.')) : Number(line.cantidadJefatura || 0)
+          idLinea: line.idLinea,
+          cantidad: qty
         };
       });
     }
 
     function autorizarActual() {
       if (!DETALLE || DECISION_EN_CURSO) return;
-      let extra = '';
-      if (DETALLE.tipo === 'NORMAL') {
-        const cantidades = cantidadesActuales();
-        const invalid = cantidades.some(function(item) { return !Number.isFinite(item.cantidad) || item.cantidad < 0; });
-        if (invalid) {
-          aviso('Revisa las cantidades: todas deben ser números iguales o mayores que cero.');
-          return;
-        }
-        const total = cantidades.reduce(function(sum, item) { return sum + item.cantidad; }, 0);
-        if (total === 0) extra = '\n\nTodas las cantidades están en 0: la OC quedará RECHAZADA automáticamente.';
+
+      const cantidades = cantidadesActuales();
+      const invalid = cantidades.some(function(item) {
+        return !Number.isFinite(item.cantidad) || item.cantidad < 0;
+      });
+
+      if (invalid) {
+        aviso('Revisa las cantidades: todas deben ser números iguales o mayores que cero.');
+        return;
       }
 
-      const text = DETALLE.tipo === 'REAUTORIZACION'
-        ? '¿Autorizar el cambio propuesto para ' + DETALLE.oc + '?\n\nProveedor propuesto: ' + (DETALLE.proveedorPropuesto || '-') + '\nTotal propuesto: ' + formatoMoneda(DETALLE.brutoPropuesto || 0)
-        : '¿Autorizar ' + DETALLE.oc + '?\n\nTotal: ' + formatoMoneda(totalVisible()) + extra;
-      if (!window.confirm(text)) return;
+      let neto = 0;
+      (DETALLE.lineas || []).forEach(function(line, index) {
+        const qty = Number(cantidades[index].cantidad || 0);
+        const price = DETALLE.tipo === 'REAUTORIZACION'
+          ? Number(line.precioPropuesto || 0)
+          : DETALLE.tipo === 'NORMAL'
+            ? Number(line.precio || 0)
+            : Number(line.precio || 0);
+
+        neto += qty * price;
+      });
+
+      const total = neto * 1.19;
+
+      let contexto = '';
+      if (DETALLE.tipo === 'REAUTORIZACION') {
+        contexto = '\n\nEstás autorizando una REAUTORIZACIÓN.';
+      } else if (DETALLE.tipo === 'MANUAL') {
+        contexto = '\n\nEstás autorizando una OC MANUAL.';
+      }
+
+      if (!window.confirm(
+        '¿Autorizar ' + DETALLE.oc + '?\n\n' +
+        'Total final: ' + formatoMoneda(total) +
+        contexto
+      )) return;
+
       enviarDecision('AUTORIZAR', '');
     }
 
@@ -1718,7 +1946,16 @@
       document.getElementById('rechazoObservacion').value = '';
       document.getElementById('decisionText').textContent =
         'Escribe el motivo para rechazar ' + DETALLE.oc + '. Este dato quedará registrado en MAESTRO.';
-      document.getElementById('decisionOverlay').classList.add('visible');
+      const modal = document.getElementById('decisionOverlay');
+      modal.classList.remove('theme-normal', 'theme-reauth', 'theme-manual');
+      modal.classList.add(
+        DETALLE.tipo === 'REAUTORIZACION'
+          ? 'theme-reauth'
+          : DETALLE.tipo === 'MANUAL'
+            ? 'theme-manual'
+            : 'theme-normal'
+      );
+      modal.classList.add('visible');
       setTimeout(function() { document.getElementById('rechazoObservacion').focus(); }, 50);
     }
 
@@ -1752,7 +1989,7 @@
           huella: DETALLE.huella,
           decision: decision,
           observacion: observation || '',
-          cantidades: DETALLE.tipo === 'NORMAL' ? cantidadesActuales() : []
+          cantidades: cantidadesActuales()
         };
         const text = JSON.stringify(payload);
         if (text.length > 12000) throw new Error('La solicitud es demasiado extensa para el transporte actual.');
@@ -1786,14 +2023,21 @@
 
     function totalVisible() {
       if (!DETALLE) return 0;
-      if (DETALLE.tipo === 'REAUTORIZACION') return Number(DETALLE.brutoPropuesto || 0);
-      if (DETALLE.tipo === 'MANUAL') return Number(DETALLE.bruto || 0);
+
       let neto = 0;
+      const cantidades = cantidadesActuales();
+
       (DETALLE.lineas || []).forEach(function(line, index) {
-        const input = document.querySelector('[data-qty-index="' + index + '"]');
-        const qty = input ? Number(String(input.value || '').replace(',', '.')) : Number(line.cantidadJefatura || 0);
-        if (Number.isFinite(qty)) neto += qty * Number(line.precio || 0);
+        const qty = cantidades[index] ? Number(cantidades[index].cantidad || 0) : 0;
+        const price = DETALLE.tipo === 'REAUTORIZACION'
+          ? Number(line.precioPropuesto || 0)
+          : Number(line.precio || 0);
+
+        if (Number.isFinite(qty) && qty >= 0) {
+          neto += qty * price;
+        }
       });
+
       return neto * 1.19;
     }
 
