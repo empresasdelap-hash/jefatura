@@ -412,6 +412,12 @@
       <div id="userLine" class="user-line">Identificando usuario...</div>
     </section>
 
+    <nav class="tabs" aria-label="Bandejas de Jefatura">
+      <button id="tabSolicitudes" class="tab active" onclick="cambiarTab('solicitudes')">SOLICITUDES <span id="countSolicitudes" class="tab-count">0</span></button>
+      <button id="tabReautorizaciones" class="tab" onclick="cambiarTab('reautorizaciones')">REAUTORIZACIONES <span id="countReautorizaciones" class="tab-count">0</span></button>
+      <button id="tabManuales" class="tab" onclick="cambiarTab('manuales')">OC MANUALES <span id="countManuales" class="tab-count">0</span></button>
+    </nav>
+
     <section class="summary-section">
       <div class="summary-grid">
         <div class="summary-box">
@@ -451,11 +457,6 @@
       <strong>Cómo trabajar:</strong> 1) elige una bandeja, 2) pulsa <strong>REVISAR</strong>, 3) comprueba productos, gestión y montos, 4) autoriza, rechaza o edita cantidades cuando corresponda.
     </section>
 
-    <nav class="tabs" aria-label="Bandejas de Jefatura">
-      <button id="tabSolicitudes" class="tab active" onclick="cambiarTab('solicitudes')">SOLICITUDES <span id="countSolicitudes" class="tab-count">0</span></button>
-      <button id="tabReautorizaciones" class="tab" onclick="cambiarTab('reautorizaciones')">REAUTORIZACIONES <span id="countReautorizaciones" class="tab-count">0</span></button>
-      <button id="tabManuales" class="tab" onclick="cambiarTab('manuales')">OC MANUALES <span id="countManuales" class="tab-count">0</span></button>
-    </nav>
 
     <div class="list-head">
       <div>
