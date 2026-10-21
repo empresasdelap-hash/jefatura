@@ -86,12 +86,18 @@
     }
 
     .btn:disabled { opacity: .55; cursor: wait; }
-    .btn-primary { background: var(--azul); color: #fff; }
-    .btn-refresh { background: #12b76a; color: #fff; }
-    .btn-light { background: #eef4f8; color: var(--azul); border: 1px solid #cadce8; }
-    .btn-green { background: var(--verde); color: #fff; }
-    .btn-red { background: var(--rojo); color: #fff; }
-    .btn-yellow { background: #f3c84b; color: #4d3c00; }
+
+    .btn:not(:disabled):hover,
+    .tab:hover {
+      filter: brightness(.97);
+      transform: translateY(-1px);
+    }
+    .btn-primary { background: #b7d4ea; color: #234f72; border: 1px solid #93bad6; }
+    .btn-refresh { background: #cceae7; color: #245f63; border: 1px solid #a6d5d1; }
+    .btn-light { background: #e2e8ef; color: #42576b; border: 1px solid #c2ccd6; }
+    .btn-green { background: #cfeccf; color: #245c31; border: 1px solid #a8d3ac; }
+    .btn-red { background: #f5cccc; color: #8a2d2d; border: 1px solid #e6aaaa; }
+    .btn-yellow { background: #e1e8f6; color: #44527d; border: 1px solid #c5cee6; }
 
     .control-card, .summary-section, .instructions {
       margin-top: 16px;
@@ -171,9 +177,9 @@
     }
     .tab-count { display: inline-flex; min-width: 28px; height: 28px; align-items: center; justify-content: center; margin-left: 7px; border-radius: 999px; background: rgba(255,255,255,.22); }
 
-    #tabSolicitudes { background: #005b96; color: #fff; border-color: #003f6b; }
-    #tabReautorizaciones { background: #ff9800; color: #2f2100; border-color: #d97706; }
-    #tabManuales { background: #7e3db5; color: #fff; border-color: #5e2a8a; }
+    #tabSolicitudes { background: #c5dff1; color: #234f72; border-color: #9ec3de; }
+    #tabReautorizaciones { background: #f8d9ad; color: #75490d; border-color: #e9bd7d; }
+    #tabManuales { background: #ddc7f0; color: #5b3780; border-color: #c3a3df; }
 
     .tab:not(.active) { filter: saturate(.82) brightness(1.05); opacity: .92; }
     .tab.active { box-shadow: inset 0 0 0 4px rgba(255,255,255,.55), 0 5px 14px rgba(16,24,40,.18); transform: translateY(-1px); }
@@ -269,8 +275,8 @@
       top: 0;
       z-index: 8;
       padding: 14px 16px;
-      background: #184f78;
-      color: #fff;
+      background: #6d9bc0;
+      color: #ffffff;
       border-radius: 0 0 12px 12px;
       box-shadow: 0 4px 14px rgba(16,24,40,.16);
     }
@@ -282,17 +288,17 @@
       grid-template-columns: 1fr 1fr 1.25fr 1.35fr;
       gap: 10px;
     }
-    .btn-purple { background: #7448a8; color: #fff; }
-    .btn-orange { background: #ef9b35; color: #3e2a00; }
-    .btn-select { background: #fff2b8; color: #5a4700; border: 1px solid #e6c94d; }
+    .btn-purple { background: #e2e8ef; color: #42576b; border: 1px solid #c2ccd6; }
+    .btn-orange { background: #f6cf9b; color: #73460b; }
+    .btn-select { background: #eee7f8; color: #574b7a; border: 1px solid #d5c7ea; }
     .bulk-disabled { opacity: .72; cursor: not-allowed; }
     .bulk-note {
       margin-top: 10px;
       padding: 10px 12px;
       border-radius: 10px;
-      background: #fff8dc;
-      border: 1px solid #ead279;
-      color: #654d00;
+      background: #fdf5cf;
+      border: 1px solid #eadb94;
+      color: #6d5a10;
       font-weight: 700;
       font-size: 14px;
     }
@@ -357,9 +363,9 @@
       padding: 9px 18px;
       min-width: 125px;
     }
-    .btn-edit { background: #dfeaf4; color: #17476a; border: 1px solid #a9c1d5; }
-    .btn-authorize { background: #18a957; color: #fff; }
-    .btn-reject { background: #d93636; color: #fff; }
+    .btn-edit { background: #f7e7b6; color: #6d5600; border: 1px solid #e7cf7c; }
+    .btn-authorize { background: #cfeccf; color: #245c31; border: 1px solid #a8d3ac; }
+    .btn-reject { background: #f5cccc; color: #8a2d2d; border: 1px solid #e6aaaa; }
     .lot-qty {
       width: 95px;
       min-height: 36px;
@@ -495,22 +501,22 @@
        VERDE = RESULTADO YA CONFIRMADO
        ========================================================= */
     .detail-overlay.theme-normal {
-      --decision-color: #184f78;
-      --decision-soft: #e8f0f7;
-      --decision-border: #b9cedd;
-      --decision-text: #123d5b;
+      --decision-color: #6d9bc0;
+      --decision-soft: #edf4fa;
+      --decision-border: #bdd0e1;
+      --decision-text: #234f72;
     }
     .detail-overlay.theme-reauth {
-      --decision-color: #f28c00;
-      --decision-soft: #fff0dc;
-      --decision-border: #efc27d;
-      --decision-text: #633b00;
+      --decision-color: #e9b46e;
+      --decision-soft: #fff4e6;
+      --decision-border: #efc88f;
+      --decision-text: #73460b;
     }
     .detail-overlay.theme-manual {
-      --decision-color: #7e3db5;
-      --decision-soft: #f1e8f8;
-      --decision-border: #c9a7e1;
-      --decision-text: #4d2370;
+      --decision-color: #b68ad7;
+      --decision-soft: #f5effa;
+      --decision-border: #d4bbea;
+      --decision-text: #5b3780;
     }
 
     .detail-overlay .detail-topbar {
@@ -542,13 +548,14 @@
     }
 
     .detail-overlay .btn-context {
-      background: var(--decision-color, #184f78);
-      color: #fff;
+      background: #cfeccf;
+      color: #245c31;
+      border: 1px solid #a8d3ac;
     }
     .detail-overlay .btn-edit-context {
-      background: var(--decision-soft, #eef4f8);
-      color: var(--decision-text, #184f78);
-      border: 1px solid var(--decision-border, #cadce8);
+      background: #f7e7b6;
+      color: #6d5600;
+      border: 1px solid #e7cf7c;
     }
 
     .detail-qty {
@@ -669,9 +676,9 @@
     }
     .decision-overlay.visible { display: flex; align-items: center; justify-content: center; }
 
-    .decision-overlay.theme-normal { --decision-color: #184f78; --decision-soft: #e8f0f7; }
-    .decision-overlay.theme-reauth { --decision-color: #f28c00; --decision-soft: #fff0dc; }
-    .decision-overlay.theme-manual { --decision-color: #7e3db5; --decision-soft: #f1e8f8; }
+    .decision-overlay.theme-normal { --decision-color: #6d9bc0; --decision-soft: #edf4fa; }
+    .decision-overlay.theme-reauth { --decision-color: #e9b46e; --decision-soft: #fff4e6; }
+    .decision-overlay.theme-manual { --decision-color: #b68ad7; --decision-soft: #f5effa; }
     .decision-overlay .decision-modal {
       border-top: 8px solid var(--decision-color, #184f78);
     }
@@ -746,7 +753,7 @@
         </div>
       </div>
       <div class="top-actions">
-        <button id="btnActualizar" class="btn btn-refresh" onclick="cargarPanel()">↻ ACTUALIZAR</button>
+        <button id="btnActualizar" class="btn btn-refresh" onclick="cargarPanel()">🔄 ACTUALIZAR</button>
       </div>
     </header>
 
@@ -765,9 +772,9 @@
     </section>
 
     <nav class="tabs" aria-label="Bandejas de Jefatura">
-      <button id="tabSolicitudes" class="tab active" onclick="abrirLote()">SOLICITUDES <span id="countSolicitudes" class="tab-count">0</span></button>
-      <button id="tabReautorizaciones" class="tab" onclick="abrirReautorizacionesDesdeTab()">REAUTORIZACIONES <span id="countReautorizaciones" class="tab-count">0</span></button>
-      <button id="tabManuales" class="tab" onclick="abrirManualesDesdeTab()">OC MANUALES <span id="countManuales" class="tab-count">0</span></button>
+      <button id="tabSolicitudes" class="tab active" onclick="abrirLote()">🧾 SOLICITUDES <span id="countSolicitudes" class="tab-count">0</span></button>
+      <button id="tabReautorizaciones" class="tab" onclick="abrirReautorizacionesDesdeTab()">🔄 REAUTORIZACIONES <span id="countReautorizaciones" class="tab-count">0</span></button>
+      <button id="tabManuales" class="tab" onclick="abrirManualesDesdeTab()">📝 OC MANUALES <span id="countManuales" class="tab-count">0</span></button>
     </nav>
 
 
@@ -807,7 +814,7 @@
     </section>
 
     <section class="management-summary management-summary-economic">
-      <h2>RESUMEN ECONÓMICO JEFATURA</h2>
+      <h2>📊 RESUMEN ECONÓMICO JEFATURA</h2>
       <div class="management-summary-table">
         <table class="economic-table">
           <tbody>
@@ -848,10 +855,10 @@
         <h2 id="lotTitle">LOTE VIGENTE</h2>
         <p id="lotSubtitle">Cargando solicitudes...</p>
         <div class="lot-toolbar">
-          <button class="btn btn-purple" onclick="cerrarLote()">VOLVER AL INICIO</button>
-          <button class="btn btn-refresh" onclick="cargarVistaLote()">↻ ACTUALIZAR LOTE</button>
-          <button id="btnSeleccionarTodo" class="btn btn-select" onclick="seleccionarTodoLote()">☐ SELECCIONAR TODO</button>
-          <button id="btnAutorizarSeleccionadas" class="btn btn-yellow" onclick="autorizarSeleccionadas()" disabled>AUTORIZAR SELECCIONADAS</button>
+          <button class="btn btn-purple" onclick="cerrarLote()">⬅️ VOLVER AL INICIO</button>
+          <button class="btn btn-refresh" onclick="cargarVistaLote()">🔄 ACTUALIZAR LOTE</button>
+          <button id="btnSeleccionarTodo" class="btn btn-select" onclick="seleccionarTodoLote()">☑️ SELECCIONAR TODO</button>
+          <button id="btnAutorizarSeleccionadas" class="btn btn-yellow" onclick="autorizarSeleccionadas()" disabled>✅ AUTORIZAR SELECCIONADAS</button>
         </div>
         <div class="bulk-note" id="bulkNote">
           Selecciona una o varias OC. La autorización masiva se guardará en MAESTRO como una sola operación atómica.
@@ -886,7 +893,7 @@
           <h2 id="detailTitle">Revisión de OC</h2>
           <p id="detailSubtitle">Cargando...</p>
         </div>
-        <button class="btn btn-light" onclick="cerrarDetalle()">VOLVER</button>
+        <button class="btn btn-light" onclick="cerrarDetalle()">⬅️ VOLVER</button>
       </div>
 
       <div id="detailLoading" class="loading">
@@ -899,7 +906,7 @@
         <section class="panel span-8">
           <h3>1. Orden de compra</h3>
           <div class="kv-grid">
-            <div class="kv"><span>OC</span><strong id="dOc">-</strong></div>
+            <div class="kv"><span>🧾 OC</span><strong id="dOc">-</strong></div>
             <div class="kv"><span>Empresa</span><strong id="dEmpresa">-</strong></div>
             <div class="kv"><span>Lote</span><strong id="dLote">-</strong></div>
             <div class="kv"><span>Fecha</span><strong id="dFecha">-</strong></div>
@@ -940,10 +947,10 @@
 
     <footer id="detailActions" class="detail-actions" style="display:none">
       <div class="detail-actions-inner">
-        <button class="btn btn-light" onclick="cerrarDetalle()">VOLVER</button>
-        <button id="btnEditar" class="btn btn-edit-context" onclick="alternarEdicion()">EDITAR CANTIDADES</button>
-        <button id="btnRechazar" class="btn btn-red" onclick="abrirRechazo()">RECHAZAR</button>
-        <button id="btnAutorizar" class="btn btn-context" onclick="autorizarActual()">AUTORIZAR</button>
+        <button class="btn btn-light" onclick="cerrarDetalle()">⬅️ VOLVER</button>
+        <button id="btnEditar" class="btn btn-edit-context" onclick="alternarEdicion()">✏️ EDITAR CANTIDADES</button>
+        <button id="btnRechazar" class="btn btn-red" onclick="abrirRechazo()">❌ RECHAZAR</button>
+        <button id="btnAutorizar" class="btn btn-context" onclick="autorizarActual()">✅ AUTORIZAR</button>
       </div>
     </footer>
   </section>
@@ -954,8 +961,8 @@
       <p id="decisionText">Escribe el motivo del rechazo. Este dato quedará registrado en MAESTRO.</p>
       <textarea id="rechazoObservacion" maxlength="2000" placeholder="Motivo del rechazo"></textarea>
       <div class="decision-buttons">
-        <button class="btn btn-light" onclick="cerrarRechazo()">CANCELAR</button>
-        <button id="btnConfirmarRechazo" class="btn btn-red" onclick="confirmarRechazo()">CONFIRMAR RECHAZO</button>
+        <button class="btn btn-light" onclick="cerrarRechazo()">⬅️ CANCELAR</button>
+        <button id="btnConfirmarRechazo" class="btn btn-red" onclick="confirmarRechazo()">❌ CONFIRMAR RECHAZO</button>
       </div>
     </div>
   </section>
@@ -1010,7 +1017,7 @@
       } finally {
         mostrarCarga(false);
         btn.disabled = false;
-        btn.textContent = '↻ ACTUALIZAR';
+        btn.textContent = '🔄 ACTUALIZAR';
       }
     }
 
@@ -1234,10 +1241,10 @@
         block.innerHTML = `
           <div class="lot-oc-head">
             <input class="lot-check" type="checkbox" data-lot-index="${idx}" onchange="actualizarSeleccionLote(${idx}, this.checked)">
-            <div><strong>PROVEEDOR</strong><br>${escapeHtml(d.proveedorOriginal || '-')}</div>
-            <div><strong>FECHA</strong><br>${escapeHtml(d.fechaEmision || '-')}</div>
-            <div><strong>LOTE</strong><br>${escapeHtml(d.lote || '-')}</div>
-            <div><strong>OC</strong><br>${escapeHtml(d.oc || '-')}</div>
+            <div><strong>🏢 PROVEEDOR</strong><br>${escapeHtml(d.proveedorOriginal || '-')}</div>
+            <div><strong>📅 FECHA</strong><br>${escapeHtml(d.fechaEmision || '-')}</div>
+            <div><strong>📦 LOTE</strong><br>${escapeHtml(d.lote || '-')}</div>
+            <div><strong>🧾 OC</strong><br>${escapeHtml(d.oc || '-')}</div>
           </div>
           <div class="lot-approved-by">APROBADO POR ÁREA: ${escapeHtml(aprobadores)}</div>
           <div class="table-wrap" style="border:0;border-radius:0">
@@ -1259,9 +1266,9 @@
             </table>
           </div>
           <div class="lot-actions-row">
-            <button class="btn btn-edit" id="lotEdit-${idx}" onclick="editarOcLote(${idx})">EDITAR</button>
-            <button class="btn btn-authorize" onclick="autorizarOcLote(${idx})">AUTORIZAR</button>
-            <button class="btn btn-reject" onclick="rechazarOcLote(${idx})">RECHAZAR</button>
+            <button class="btn btn-edit" id="lotEdit-${idx}" onclick="editarOcLote(${idx})">✏️ EDITAR</button>
+            <button class="btn btn-authorize" onclick="autorizarOcLote(${idx})">✅ AUTORIZAR</button>
+            <button class="btn btn-reject" onclick="rechazarOcLote(${idx})">❌ RECHAZAR</button>
           </div>
         `;
         container.appendChild(block);
@@ -1291,7 +1298,7 @@
       const checks = Array.from(document.querySelectorAll('.lot-check'));
       const allSelected = checks.length > 0 && checks.every(function(c) { return c.checked; });
       const btn = document.getElementById('btnSeleccionarTodo');
-      if (btn) btn.textContent = allSelected ? '☑ QUITAR SELECCIÓN' : '☐ SELECCIONAR TODO';
+      if (btn) btn.textContent = allSelected ? '☑ QUITAR SELECCIÓN' : '☑️ SELECCIONAR TODO';
 
       const bulk = document.getElementById('btnAutorizarSeleccionadas');
       if (bulk) {
@@ -1613,8 +1620,8 @@
       editBtn.style.display = 'block';
       editBtn.textContent = 'EDITAR CANTIDADES';
 
-      document.getElementById('btnAutorizar').textContent = 'AUTORIZAR';
-      document.getElementById('btnRechazar').textContent = 'RECHAZAR';
+      document.getElementById('btnAutorizar').textContent = '✅ AUTORIZAR';
+      document.getElementById('btnRechazar').textContent = '❌ RECHAZAR';
 
       document.getElementById('detailContent').style.display = 'grid';
       document.getElementById('detailActions').style.display = 'block';
@@ -1760,7 +1767,7 @@
       });
 
       const btn = document.getElementById('btnEditar');
-      btn.textContent = EDICION ? 'CANCELAR EDICIÓN' : 'EDITAR CANTIDADES';
+      btn.textContent = EDICION ? '✏️ CANCELAR EDICIÓN' : '✏️ EDITAR CANTIDADES';
 
       if (EDICION) {
         const first = document.querySelector('#detailTableBody .detail-qty');
