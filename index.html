@@ -766,8 +766,8 @@
 
     <nav class="tabs" aria-label="Bandejas de Jefatura">
       <button id="tabSolicitudes" class="tab active" onclick="abrirSolicitudesDesdeTab()">SOLICITUDES <span id="countSolicitudes" class="tab-count">0</span></button>
-      <button id="tabReautorizaciones" class="tab" onclick="cambiarTab('reautorizaciones')">REAUTORIZACIONES <span id="countReautorizaciones" class="tab-count">0</span></button>
-      <button id="tabManuales" class="tab" onclick="cambiarTab('manuales')">OC MANUALES <span id="countManuales" class="tab-count">0</span></button>
+      <button id="tabReautorizaciones" class="tab" onclick="abrirReautorizacionesDesdeTab()">REAUTORIZACIONES <span id="countReautorizaciones" class="tab-count">0</span></button>
+      <button id="tabManuales" class="tab" onclick="abrirManualesDesdeTab()">OC MANUALES <span id="countManuales" class="tab-count">0</span></button>
     </nav>
 
 
@@ -1085,8 +1085,8 @@
 
       const titles = {
         solicitudes: ['Solicitudes del lote vigente', 'Pendientes de decisión de Jefatura provenientes de MATRIZ OC.'],
-        reautorizaciones: ['Reautorizaciones', 'Cambios de proveedor, precio o cantidad propuestos por Compras.'],
-        manuales: ['OC manuales', 'Solicitudes nuevas creadas por Compras y pendientes de Jefatura.']
+        reautorizaciones: ['Reautorizaciones', 'Selecciona la bandeja naranjo para revisar la solicitud pendiente.'],
+        manuales: ['OC manuales', 'Selecciona la bandeja morada para revisar la solicitud pendiente.']
       };
       setText('listTitle', titles[TAB_ACTUAL][0]);
       setText('listSubtitle', titles[TAB_ACTUAL][1]);
@@ -1110,56 +1110,55 @@
       });
 
       empty.style.display = list.length ? 'none' : 'block';
-      list.forEach(function(item) {
-        const card = document.createElement('article');
-        card.className = 'request-card';
-        const badgeClass = item.tipo === 'REAUTORIZACION' ? 'badge-reauth' : 'badge-manual';
-        const badgeText = item.tipo === 'REAUTORIZACION' ? 'REAUTORIZACIÓN' : 'OC MANUAL';
-        const provider = item.proveedor || item.proveedorOriginal || 'SIN PROVEEDOR';
-        card.innerHTML = `
-          <div class="card-top">
-            <div class="card-oc">${escapeHtml(item.oc || '-')}</div>
-            <span class="badge ${badgeClass}">${badgeText}</span>
-          </div>
-          <div class="provider">${escapeHtml(provider)}</div>
-          <div class="meta-grid">
-            <div><strong>Empresa:</strong> ${escapeHtml(item.empresa || '-')}</div>
-            <div><strong>Lote:</strong> ${escapeHtml(item.lote || 'SIN LOTE')}</div>
-            <div><strong>Productos:</strong> ${Number(item.lineas || 0)}</div>
-            <div><strong>Gestión:</strong> ${escapeHtml(item.subtipo || item.gestion || '-')}</div>
-          </div>
-          <div class="gestion-note">${escapeHtml(item.gestion || 'Pendiente de revisión')}</div>
-          <div class="amount-row">
-            <div class="line-count">Total con IVA</div>
-            <div class="amount">${formatoMoneda(item.bruto || 0)}</div>
-          </div>
-          <div class="card-actions">
-            <button class="btn ${item.tipo === 'REAUTORIZACION' ? 'btn-orange' : 'btn-purple'}"
-              onclick='abrirDetalle(${JSON.stringify({tipo:item.tipo,empresa:item.empresa,oc:item.oc,id:item.id||''})})'>REVISAR</button>
-          </div>
-        `;
-        container.appendChild(card);
-      });
+      container.innerHTML = '';
     }
 
-    async function abrirSolicitudesDesdeTab() {
-      TAB_ACTUAL = 'solicitudes';
 
+    function marcarTabActivo(tab) {
+      TAB_ACTUAL = tab;
       ['solicitudes','reautorizaciones','manuales'].forEach(function(name) {
         const id = name === 'solicitudes' ? 'tabSolicitudes' : name === 'reautorizaciones' ? 'tabReautorizaciones' : 'tabManuales';
         const el = document.getElementById(id);
-        if (el) el.classList.toggle('active', name === 'solicitudes');
+        if (el) el.classList.toggle('active', name === tab);
       });
+      const buscador = document.getElementById('buscador');
+      if (buscador) buscador.value = '';
+    }
 
-      document.getElementById('buscador').value = '';
+    async function abrirReautorizacionesDesdeTab() {
+      marcarTabActivo('reautorizaciones');
 
-      if (!PANEL || !(PANEL.solicitudes || []).length) {
-        renderLista();
-        aviso('No existen solicitudes pendientes del lote vigente.');
+      const items = PANEL && Array.isArray(PANEL.reautorizaciones) ? PANEL.reautorizaciones : [];
+      if (!items.length) {
+        aviso('No existen reautorizaciones pendientes.');
         return;
       }
 
-      await abrirLote();
+      const item = items[0];
+      await abrirDetalle({
+        tipo: item.tipo,
+        empresa: item.empresa,
+        oc: item.oc,
+        id: item.id || ''
+      });
+    }
+
+    async function abrirManualesDesdeTab() {
+      marcarTabActivo('manuales');
+
+      const items = PANEL && Array.isArray(PANEL.manuales) ? PANEL.manuales : [];
+      if (!items.length) {
+        aviso('No existen OC manuales pendientes.');
+        return;
+      }
+
+      const item = items[0];
+      await abrirDetalle({
+        tipo: item.tipo,
+        empresa: item.empresa,
+        oc: item.oc,
+        id: item.id || ''
+      });
     }
 
     async function abrirLote() {
