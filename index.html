@@ -178,17 +178,8 @@
     .tab:not(.active) { filter: saturate(.82) brightness(1.05); opacity: .92; }
     .tab.active { box-shadow: inset 0 0 0 4px rgba(255,255,255,.55), 0 5px 14px rgba(16,24,40,.18); transform: translateY(-1px); }
     .tab:not(.active) .tab-count { background: rgba(255,255,255,.62); color: #1d2939; }
-
-
-    .management-summary-v2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0;
-      align-items: start;
-    }
-    .management-half { min-width: 0; }
-    .management-half + .management-half { border-left: 6px solid var(--fondo); }
-    .management-summary-v2 h2 {
+    .management-summary-economic { overflow: hidden; }
+    .management-summary-economic h2 {
       margin: 0;
       padding: 11px 14px;
       background: #184f78;
@@ -196,31 +187,18 @@
       font-size: 16px;
       text-align: center;
     }
-    .management-summary-v2 table { min-width: 0; width: 100%; }
-    .management-summary-v2 td {
+    .management-summary-economic table { min-width: 0; width: 100%; }
+    .management-summary-economic td {
       padding: 8px 10px;
       font-size: 15px;
       border-bottom: 1px solid #e4e9ee;
     }
-    .management-summary-v2 td:first-child { font-weight: 700; }
-    .management-summary-v2 .amount-cell { text-align: right; font-weight: 900; }
-    .management-summary-v2 .highlight-pending td { background: #fff0df; }
-    .management-summary-v2 .highlight-total td { background: #e1f0db; }
-    .management-data-note {
-      grid-column: 1 / -1;
-      padding: 8px 12px;
-      background: #f7f9fb;
-      color: #667085;
-      font-size: 12px;
-      text-align: center;
-      border-top: 1px solid #e4e9ee;
-    }
-    @media (max-width: 800px) {
-      .management-summary-v2 { grid-template-columns: 1fr; }
-      .management-half + .management-half { border-left: 0; border-top: 8px solid var(--fondo); }
-    }
+    .management-summary-economic td:first-child { font-weight: 700; }
+    .management-summary-economic .amount-cell { text-align: right; font-weight: 900; }
+    .management-summary-economic .highlight-pending td { background: #fff0df; }
+    .management-summary-economic .highlight-total td { background: #e1f0db; }
 
-    .management-summary {
+.management-summary {
       margin-top: 16px;
       background: #fff;
       border: 1px solid var(--borde);
@@ -249,6 +227,27 @@
     .management-summary th { background: #e7f0f7; }
     .management-summary td { font-size: 14px; }
     .management-summary .amount-cell { text-align: right; font-weight: 900; white-space: nowrap; }
+
+
+    .lot-direct-action {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 16px;
+      background: #fff;
+      border: 1px solid var(--borde);
+      border-left: 6px solid #005b96;
+      border-radius: 12px;
+      box-shadow: var(--sombra);
+    }
+    .lot-direct-action strong { display: block; font-size: 18px; color: #123d5b; }
+    .lot-direct-action span { display: block; margin-top: 4px; color: var(--muted); font-weight: 700; font-size: 14px; }
+    @media (max-width: 720px) {
+      .lot-direct-action { align-items: stretch; flex-direction: column; }
+      .lot-direct-action .btn { width: 100%; }
+    }
 
     .lot-launcher {
       margin-top: 14px;
@@ -635,39 +634,19 @@
       </div>
     </section>
 
-    <section class="management-summary management-summary-v2">
-      <div class="management-half">
-        <h2>RESUMEN ECONÓMICO JEFATURA</h2>
-        <div class="management-summary-table">
-          <table class="economic-table">
-            <tbody>
-              <tr><td>TOTAL SOLICITADO</td><td id="ecoSolicitado" class="amount-cell">—</td></tr>
-              <tr><td>TOTAL APROBADO POR ÁREAS</td><td id="ecoAprobadoAreas" class="amount-cell">—</td></tr>
-              <tr><td>AJUSTE ÁREAS</td><td id="ecoAjusteAreas" class="amount-cell">—</td></tr>
-              <tr class="highlight-pending"><td>PENDIENTE DE AUTORIZAR</td><td id="ecoPendiente" class="amount-cell">$0</td></tr>
-              <tr><td>AJUSTE JEFATURA</td><td id="ecoAjusteJefatura" class="amount-cell">—</td></tr>
-              <tr class="highlight-total"><td><strong>TOTAL AUTORIZADO POR JEFATURA</strong></td><td id="ecoTotalAutorizado" class="amount-cell"><strong>—</strong></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="management-half">
-        <h2>ESTADO DE REVISIÓN</h2>
-        <div class="management-summary-table">
-          <table class="review-table">
-            <tbody>
-              <tr class="highlight-pending"><td>OC PENDIENTES</td><td id="revPendientes" class="amount-cell">0</td></tr>
-              <tr><td>OC AUTORIZADAS</td><td id="revAutorizadas" class="amount-cell">0</td></tr>
-              <tr><td>OC RECHAZADAS</td><td id="revRechazadas" class="amount-cell">0</td></tr>
-              <tr><td>TOTAL REVISADAS</td><td id="revRevisadas" class="amount-cell">0</td></tr>
-              <tr><td>TOTAL OC DEL LOTE</td><td id="revTotalLote" class="amount-cell">0</td></tr>
-              <tr><td>OTRAS SOLICITUDES</td><td id="revOtras" class="amount-cell">0</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="management-data-note">
-        Los montos históricos completos se completarán cuando MAESTRO los entregue directamente por API. No se estiman valores.
+    <section class="management-summary management-summary-economic">
+      <h2>RESUMEN ECONÓMICO JEFATURA</h2>
+      <div class="management-summary-table">
+        <table class="economic-table">
+          <tbody>
+            <tr><td>TOTAL SOLICITADO</td><td id="ecoSolicitado" class="amount-cell">$0</td></tr>
+            <tr><td>TOTAL APROBADO POR ÁREAS</td><td id="ecoAprobadoAreas" class="amount-cell">$0</td></tr>
+            <tr><td>AJUSTE ÁREAS</td><td id="ecoAjusteAreas" class="amount-cell">$0</td></tr>
+            <tr class="highlight-pending"><td>PENDIENTE DE AUTORIZAR</td><td id="ecoPendiente" class="amount-cell">$0</td></tr>
+            <tr><td>AJUSTE JEFATURA</td><td id="ecoAjusteJefatura" class="amount-cell">$0</td></tr>
+            <tr class="highlight-total"><td><strong>TOTAL AUTORIZADO POR JEFATURA</strong></td><td id="ecoTotalAutorizado" class="amount-cell"><strong>$0</strong></td></tr>
+          </tbody>
+        </table>
       </div>
     </section>
 
@@ -888,27 +867,13 @@
     function renderGestionLote() {
       if (!PANEL) return;
       const r = PANEL.resumen || {};
-      const pendientes = Number(r.pendientesLote || 0);
-      const autorizadas = Number(r.autorizadasLote || 0);
-      const rechazadas = Number(r.rechazadasLote || 0);
-      const totalLote = Number(r.totalOcLote || 0);
-      const revisadas = autorizadas + rechazadas;
-      const otras = Number(r.reautorizaciones || 0) + Number(r.manuales || 0);
 
-      setText('ecoPendiente', formatoMoneda(r.montoPendienteLote || 0));
-
-      setText('ecoSolicitado', '—');
-      setText('ecoAprobadoAreas', '—');
-      setText('ecoAjusteAreas', '—');
-      setText('ecoAjusteJefatura', '—');
-      setText('ecoTotalAutorizado', '—');
-
-      setText('revPendientes', pendientes);
-      setText('revAutorizadas', autorizadas);
-      setText('revRechazadas', rechazadas);
-      setText('revRevisadas', revisadas);
-      setText('revTotalLote', totalLote);
-      setText('revOtras', otras);
+      setText('ecoSolicitado', formatoMoneda(r.totalSolicitadoLote || 0));
+      setText('ecoAprobadoAreas', formatoMoneda(r.totalAprobadoAreasLote || 0));
+      setText('ecoAjusteAreas', formatoMontoFirmado(r.ajusteAreasLote || 0));
+      setText('ecoPendiente', formatoMoneda(r.pendienteAutorizarLote || r.montoPendienteLote || 0));
+      setText('ecoAjusteJefatura', formatoMontoFirmado(r.ajusteJefaturaLote || 0));
+      setText('ecoTotalAutorizado', formatoMoneda(r.totalAutorizadoJefaturaLote || 0));
     }
 
     function cambiarTab(tab) {
@@ -953,25 +918,16 @@
         empty.style.display = solicitudes.length ? 'none' : 'block';
         if (!solicitudes.length) return;
 
-        const bruto = solicitudes.reduce(function(sum, item) { return sum + Number(item.bruto || 0); }, 0);
-        const launcher = document.createElement('section');
-        launcher.className = 'lot-launcher';
-        launcher.innerHTML = `
-          <div class="lot-launcher-top">
-            <div>
-              <h3>${escapeHtml(PANEL.empresa || '-')} · ${escapeHtml(PANEL.loteVigente || 'SIN LOTE')}</h3>
-              <p>${solicitudes.length} OC pendiente(s) · revisión completa del lote</p>
-            </div>
-            <button class="btn btn-primary" onclick="abrirLote()">ABRIR LOTE VIGENTE</button>
+        const action = document.createElement('div');
+        action.className = 'lot-direct-action';
+        action.innerHTML = `
+          <div>
+            <strong>${escapeHtml(PANEL.loteVigente || 'LOTE VIGENTE')}</strong>
+            <span>${solicitudes.length} OC pendiente(s) provenientes de MATRIZ OC</span>
           </div>
-          <div class="lot-launcher-stats">
-            <span class="lot-pill">${solicitudes.length} OC PENDIENTES</span>
-            <span class="lot-pill">${formatoMoneda(bruto)} CON IVA</span>
-            <span class="lot-pill">${Number((PANEL.resumen || {}).autorizadasLote || 0)} AUTORIZADAS</span>
-            <span class="lot-pill">${Number((PANEL.resumen || {}).rechazadasLote || 0)} RECHAZADAS</span>
-          </div>
+          <button class="btn btn-primary" onclick="abrirLote()">ABRIR SOLICITUDES DEL LOTE</button>
         `;
-        container.appendChild(launcher);
+        container.appendChild(action);
         return;
       }
 
@@ -1589,6 +1545,13 @@
     function formatoNumero(value) {
       return new Intl.NumberFormat('es-CL', {maximumFractionDigits:3}).format(Number(value || 0));
     }
+    function formatoMontoFirmado(value) {
+      const number = Number(value || 0);
+      if (Math.abs(number) < 0.005) return '$0';
+      const money = formatoMoneda(Math.abs(number));
+      return number < 0 ? '(' + money + ')' : money;
+    }
+
     function formatoDiferencia(value) {
       const number = Number(value || 0);
       if (number === 0) return '$0';
