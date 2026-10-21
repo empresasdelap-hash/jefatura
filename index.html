@@ -169,9 +169,148 @@
       font-weight: 900;
       font-size: 17px;
     }
-    .tab.active { background: var(--azul); color: #fff; border-color: var(--azul); }
     .tab-count { display: inline-flex; min-width: 28px; height: 28px; align-items: center; justify-content: center; margin-left: 7px; border-radius: 999px; background: rgba(255,255,255,.22); }
-    .tab:not(.active) .tab-count { background: var(--azul-claro); }
+
+    #tabSolicitudes { background: #184f78; color: #fff; border-color: #184f78; }
+    #tabReautorizaciones { background: #ef9b35; color: #3e2a00; border-color: #d8811c; }
+    #tabManuales { background: #7448a8; color: #fff; border-color: #623990; }
+
+    .tab:not(.active) { filter: saturate(.82) brightness(1.05); opacity: .92; }
+    .tab.active { box-shadow: inset 0 0 0 3px rgba(255,255,255,.38), 0 3px 10px rgba(16,24,40,.10); }
+    .tab:not(.active) .tab-count { background: rgba(255,255,255,.62); color: #1d2939; }
+
+    .management-summary {
+      margin-top: 16px;
+      background: #fff;
+      border: 1px solid var(--borde);
+      border-radius: var(--radio);
+      box-shadow: var(--sombra);
+      overflow: hidden;
+    }
+    .management-summary h2 {
+      margin: 0;
+      padding: 13px 16px;
+      background: #184f78;
+      color: #fff;
+      font-size: 17px;
+      text-align: center;
+      letter-spacing: .01em;
+    }
+    .management-summary-note {
+      padding: 10px 16px;
+      background: #eef6fb;
+      color: #38566e;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .management-summary-table { overflow-x: auto; }
+    .management-summary table { min-width: 900px; }
+    .management-summary th { background: #e7f0f7; }
+    .management-summary td { font-size: 14px; }
+    .management-summary .amount-cell { text-align: right; font-weight: 900; white-space: nowrap; }
+
+    .lot-launcher {
+      margin-top: 14px;
+      padding: 22px;
+      background: #fff;
+      border: 1px solid var(--borde);
+      border-radius: var(--radio);
+      box-shadow: var(--sombra);
+    }
+    .lot-launcher-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .lot-launcher h3 { margin: 0; font-size: 24px; }
+    .lot-launcher p { margin: 7px 0 0; color: var(--muted); font-weight: 700; }
+    .lot-launcher-stats { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
+    .lot-pill {
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: #eef4f8;
+      color: #184f78;
+      font-weight: 900;
+      font-size: 14px;
+    }
+
+    .lot-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 900;
+      overflow-y: auto;
+      background: #edf1f4;
+    }
+    .lot-overlay.visible { display: block; }
+    .lot-shell { max-width: 1550px; margin: 0 auto; padding: 14px 16px 120px; }
+    .lot-titlebar {
+      position: sticky;
+      top: 0;
+      z-index: 8;
+      padding: 14px 16px;
+      background: #184f78;
+      color: #fff;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 4px 14px rgba(16,24,40,.16);
+    }
+    .lot-titlebar h2 { margin: 0; font-size: 25px; text-align: center; }
+    .lot-titlebar p { margin: 5px 0 0; text-align: center; font-weight: 700; opacity: .9; }
+    .lot-toolbar {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.25fr 1.35fr;
+      gap: 10px;
+    }
+    .btn-purple { background: #7448a8; color: #fff; }
+    .btn-orange { background: #ef9b35; color: #3e2a00; }
+    .btn-select { background: #fff2b8; color: #5a4700; border: 1px solid #e6c94d; }
+    .bulk-disabled { opacity: .72; cursor: not-allowed; }
+    .bulk-note {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #fff8dc;
+      border: 1px solid #ead279;
+      color: #654d00;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .lot-oc {
+      margin-top: 16px;
+      background: #fff;
+      border: 1px solid #cfd9e2;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 3px 12px rgba(16,24,40,.07);
+    }
+    .lot-oc-head {
+      display: grid;
+      grid-template-columns: auto 1.2fr 1fr 1fr 1fr;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 14px;
+      background: #edf4f8;
+      border-bottom: 1px solid #cfdae3;
+    }
+    .lot-oc-head strong { color: #143b58; }
+    .lot-check { width: 23px; height: 23px; }
+    .lot-approved-by {
+      padding: 9px 14px;
+      background: #e9f7ed;
+      color: #185c36;
+      font-weight: 800;
+      font-size: 14px;
+    }
+    .lot-oc-actions { padding: 10px 14px; display: flex; justify-content: flex-end; gap: 10px; background: #fafcfd; }
+    .lot-loading { margin-top: 20px; }
+
+    @media (max-width: 900px) {
+      .lot-toolbar { grid-template-columns: 1fr 1fr; }
+      .lot-oc-head { grid-template-columns: auto 1fr; }
+    }
 
     .list-head {
       margin-top: 16px;
@@ -379,6 +518,7 @@
       .detail-actions-inner { grid-template-columns: 1fr; }
       .detail-actions { padding: 9px; }
       .decision-buttons { grid-template-columns: 1fr; }
+      .lot-toolbar { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -411,12 +551,6 @@
       </div>
       <div id="userLine" class="user-line">Identificando usuario...</div>
     </section>
-
-    <nav class="tabs" aria-label="Bandejas de Jefatura">
-      <button id="tabSolicitudes" class="tab active" onclick="cambiarTab('solicitudes')">SOLICITUDES <span id="countSolicitudes" class="tab-count">0</span></button>
-      <button id="tabReautorizaciones" class="tab" onclick="cambiarTab('reautorizaciones')">REAUTORIZACIONES <span id="countReautorizaciones" class="tab-count">0</span></button>
-      <button id="tabManuales" class="tab" onclick="cambiarTab('manuales')">OC MANUALES <span id="countManuales" class="tab-count">0</span></button>
-    </nav>
 
     <section class="summary-section">
       <div class="summary-grid">
@@ -453,10 +587,38 @@
       </div>
     </section>
 
+    <section class="management-summary">
+      <h2>RESUMEN DE GESTIÓN DEL LOTE VIGENTE</h2>
+      <div class="management-summary-note">
+        Muestra la gestión informada por cada OC pendiente y su monto total con IVA. No reparte montos entre áreas cuando una misma OC reúne más de un área.
+      </div>
+      <div class="management-summary-table">
+        <table>
+          <thead>
+            <tr>
+              <th>OC</th>
+              <th>PROVEEDOR</th>
+              <th>ÁREA / ENCARGADO</th>
+              <th>GESTIÓN</th>
+              <th>MONTO CON IVA</th>
+            </tr>
+          </thead>
+          <tbody id="gestionLoteBody">
+            <tr><td colspan="5" class="center">Cargando gestión...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
     <section class="instructions">
       <strong>Cómo trabajar:</strong> 1) elige una bandeja, 2) pulsa <strong>REVISAR</strong>, 3) comprueba productos, gestión y montos, 4) autoriza, rechaza o edita cantidades cuando corresponda.
     </section>
 
+    <nav class="tabs" aria-label="Bandejas de Jefatura">
+      <button id="tabSolicitudes" class="tab active" onclick="cambiarTab('solicitudes')">SOLICITUDES <span id="countSolicitudes" class="tab-count">0</span></button>
+      <button id="tabReautorizaciones" class="tab" onclick="cambiarTab('reautorizaciones')">REAUTORIZACIONES <span id="countReautorizaciones" class="tab-count">0</span></button>
+      <button id="tabManuales" class="tab" onclick="cambiarTab('manuales')">OC MANUALES <span id="countManuales" class="tab-count">0</span></button>
+    </nav>
 
     <div class="list-head">
       <div>
@@ -473,6 +635,31 @@
     <div id="emptyBox" class="empty" style="display:none">No existen solicitudes pendientes en esta bandeja.</div>
     <section id="cardsContainer" class="cards"></section>
   </main>
+
+  <section id="lotOverlay" class="lot-overlay" aria-modal="true" role="dialog">
+    <div class="lot-shell">
+      <div class="lot-titlebar">
+        <h2 id="lotTitle">LOTE VIGENTE</h2>
+        <p id="lotSubtitle">Cargando solicitudes...</p>
+        <div class="lot-toolbar">
+          <button class="btn btn-purple" onclick="cerrarLote()">VOLVER AL INICIO</button>
+          <button class="btn btn-refresh" onclick="cargarVistaLote()">↻ ACTUALIZAR LOTE</button>
+          <button id="btnSeleccionarTodo" class="btn btn-select" onclick="seleccionarTodoLote()">☐ SELECCIONAR TODO</button>
+          <button id="btnAutorizarSeleccionadas" class="btn btn-yellow bulk-disabled" disabled>AUTORIZAR SELECCIONADAS</button>
+        </div>
+        <div class="bulk-note">
+          La selección múltiple queda preparada visualmente. La autorización masiva se habilitará cuando exista una operación atómica en MAESTRO para evitar decisiones parciales.
+        </div>
+      </div>
+
+      <div id="lotLoading" class="loading lot-loading">
+        <div class="spinner"></div>
+        Cargando todas las OC del lote...
+      </div>
+      <div id="lotError" class="error-box" style="display:none"></div>
+      <div id="lotContainer"></div>
+    </div>
+  </section>
 
   <section id="detailOverlay" class="detail-overlay" aria-modal="true" role="dialog">
     <div class="detail-shell">
@@ -567,6 +754,8 @@
     let DETALLE = null;
     let EDICION = false;
     let DECISION_EN_CURSO = false;
+    let LOTE_DETALLES = [];
+    let LOTE_SELECCIONADOS = new Set();
 
     document.addEventListener('DOMContentLoaded', function() {
       cargarPanel();
@@ -596,6 +785,7 @@
         PANEL = response.data;
         pintarControles();
         renderResumen();
+        renderGestionLote();
         renderLista();
       } catch (error) {
         mostrarError(error && error.message ? error.message : String(error));
@@ -640,6 +830,41 @@
       setText('countManuales', (PANEL.manuales || []).length);
     }
 
+    function renderGestionLote() {
+      const body = document.getElementById('gestionLoteBody');
+      if (!body) return;
+      body.innerHTML = '';
+
+      const solicitudes = PANEL && Array.isArray(PANEL.solicitudes) ? PANEL.solicitudes : [];
+      if (!solicitudes.length) {
+        body.innerHTML = '<tr><td colspan="5" class="center">No existen OC pendientes en el lote vigente.</td></tr>';
+        return;
+      }
+
+      solicitudes.forEach(function(item) {
+        const tr = document.createElement('tr');
+        const responsables = item.aprobadoresArea || 'Sin gestión de área informada';
+        tr.innerHTML =
+          '<td class="center"><strong>' + escapeHtml(item.oc || '-') + '</strong></td>' +
+          '<td>' + escapeHtml(item.proveedor || item.proveedorOriginal || '-') + '</td>' +
+          '<td>' + escapeHtml(responsables) + '</td>' +
+          '<td>' + escapeHtml(item.gestion || 'APROBACIÓN DE LOTE') +
+            (item.observacionArea ? '<br><small>' + escapeHtml(item.observacionArea) + '</small>' : '') +
+          '</td>' +
+          '<td class="amount-cell">' + formatoMoneda(item.bruto || 0) + '</td>';
+        body.appendChild(tr);
+      });
+
+      const total = solicitudes.reduce(function(sum, item) {
+        return sum + Number(item.bruto || 0);
+      }, 0);
+      const totalRow = document.createElement('tr');
+      totalRow.innerHTML =
+        '<td colspan="4" style="text-align:right;font-weight:900;background:#eef4f8">TOTAL PENDIENTE DEL LOTE</td>' +
+        '<td class="amount-cell" style="background:#eef4f8">' + formatoMoneda(total) + '</td>';
+      body.appendChild(totalRow);
+    }
+
     function cambiarTab(tab) {
       TAB_ACTUAL = tab;
       ['solicitudes','reautorizaciones','manuales'].forEach(function(name) {
@@ -664,7 +889,7 @@
       if (!PANEL) return;
 
       const titles = {
-        solicitudes: ['Solicitudes del lote vigente', 'Cantidades aprobadas por Cocina / Barra-Salón que esperan decisión de Jefatura.'],
+        solicitudes: ['Solicitudes del lote vigente', 'Abre el lote completo para revisar todas las OC en una sola pantalla.'],
         reautorizaciones: ['Reautorizaciones', 'Cambios de proveedor, precio o cantidad propuestos por Compras.'],
         manuales: ['OC manuales', 'Solicitudes nuevas creadas por Compras y pendientes de Jefatura.']
       };
@@ -672,6 +897,38 @@
       setText('listSubtitle', titles[TAB_ACTUAL][1]);
 
       const search = normalizar(document.getElementById('buscador').value);
+
+      if (TAB_ACTUAL === 'solicitudes') {
+        const solicitudes = (PANEL.solicitudes || []).filter(function(item) {
+          if (!search) return true;
+          return normalizar([item.oc, item.proveedor, item.proveedorOriginal, item.gestion, item.lote].join(' ')).indexOf(search) >= 0;
+        });
+
+        empty.style.display = solicitudes.length ? 'none' : 'block';
+        if (!solicitudes.length) return;
+
+        const bruto = solicitudes.reduce(function(sum, item) { return sum + Number(item.bruto || 0); }, 0);
+        const launcher = document.createElement('section');
+        launcher.className = 'lot-launcher';
+        launcher.innerHTML = `
+          <div class="lot-launcher-top">
+            <div>
+              <h3>${escapeHtml(PANEL.empresa || '-')} · ${escapeHtml(PANEL.loteVigente || 'SIN LOTE')}</h3>
+              <p>${solicitudes.length} OC pendiente(s) · revisión completa del lote</p>
+            </div>
+            <button class="btn btn-primary" onclick="abrirLote()">ABRIR LOTE VIGENTE</button>
+          </div>
+          <div class="lot-launcher-stats">
+            <span class="lot-pill">${solicitudes.length} OC PENDIENTES</span>
+            <span class="lot-pill">${formatoMoneda(bruto)} CON IVA</span>
+            <span class="lot-pill">${Number((PANEL.resumen || {}).autorizadasLote || 0)} AUTORIZADAS</span>
+            <span class="lot-pill">${Number((PANEL.resumen || {}).rechazadasLote || 0)} RECHAZADAS</span>
+          </div>
+        `;
+        container.appendChild(launcher);
+        return;
+      }
+
       const list = listaActual().filter(function(item) {
         if (!search) return true;
         return normalizar([item.oc, item.proveedor, item.proveedorOriginal, item.gestion, item.lote].join(' ')).indexOf(search) >= 0;
@@ -681,8 +938,8 @@
       list.forEach(function(item) {
         const card = document.createElement('article');
         card.className = 'request-card';
-        const badgeClass = item.tipo === 'REAUTORIZACION' ? 'badge-reauth' : item.tipo === 'MANUAL' ? 'badge-manual' : 'badge-pending';
-        const badgeText = item.tipo === 'REAUTORIZACION' ? 'REAUTORIZACIÓN' : item.tipo === 'MANUAL' ? 'OC MANUAL' : 'PENDIENTE';
+        const badgeClass = item.tipo === 'REAUTORIZACION' ? 'badge-reauth' : 'badge-manual';
+        const badgeText = item.tipo === 'REAUTORIZACION' ? 'REAUTORIZACIÓN' : 'OC MANUAL';
         const provider = item.proveedor || item.proveedorOriginal || 'SIN PROVEEDOR';
         card.innerHTML = `
           <div class="card-top">
@@ -702,11 +959,162 @@
             <div class="amount">${formatoMoneda(item.bruto || 0)}</div>
           </div>
           <div class="card-actions">
-            <button class="btn btn-primary" onclick='abrirDetalle(${JSON.stringify({tipo:item.tipo,empresa:item.empresa,oc:item.oc,id:item.id||''})})'>REVISAR</button>
+            <button class="btn ${item.tipo === 'REAUTORIZACION' ? 'btn-orange' : 'btn-purple'}"
+              onclick='abrirDetalle(${JSON.stringify({tipo:item.tipo,empresa:item.empresa,oc:item.oc,id:item.id||''})})'>REVISAR</button>
           </div>
         `;
         container.appendChild(card);
       });
+    }
+
+    async function abrirLote() {
+      if (!PANEL) return;
+      document.getElementById('lotOverlay').classList.add('visible');
+      document.body.style.overflow = 'hidden';
+      setText('lotTitle', (PANEL.empresa || '-') + ' · ' + (PANEL.loteVigente || 'SIN LOTE'));
+      setText('lotSubtitle', 'Solicitudes pendientes de decisión de Jefatura');
+      await cargarVistaLote();
+    }
+
+    function cerrarLote() {
+      if (DECISION_EN_CURSO) {
+        aviso('Hay una operación en curso. Espera el resultado.');
+        return;
+      }
+      document.getElementById('lotOverlay').classList.remove('visible');
+      document.body.style.overflow = '';
+      LOTE_DETALLES = [];
+      LOTE_SELECCIONADOS.clear();
+    }
+
+    async function cargarVistaLote() {
+      const loading = document.getElementById('lotLoading');
+      const error = document.getElementById('lotError');
+      const container = document.getElementById('lotContainer');
+      loading.style.display = 'block';
+      error.style.display = 'none';
+      container.innerHTML = '';
+      LOTE_DETALLES = [];
+      LOTE_SELECCIONADOS.clear();
+
+      try {
+        const solicitudes = PANEL && Array.isArray(PANEL.solicitudes) ? PANEL.solicitudes : [];
+        const details = [];
+        for (const item of solicitudes) {
+          const url = CONFIG.API_BASE_URL + '?api=jefatura&accion=detalle' +
+            '&tipo=NORMAL' +
+            '&empresa=' + encodeURIComponent(item.empresa || PANEL.empresa || '') +
+            '&oc=' + encodeURIComponent(item.oc || '');
+          const response = await cargarJsonp(url);
+          if (!response || response.ok !== true) {
+            throw new Error(response && response.error ? response.error : 'No fue posible abrir ' + (item.oc || 'una OC') + '.');
+          }
+          details.push(response.data);
+        }
+        LOTE_DETALLES = details;
+        renderVistaLote();
+      } catch (err) {
+        error.textContent = err && err.message ? err.message : String(err);
+        error.style.display = 'block';
+      } finally {
+        loading.style.display = 'none';
+      }
+    }
+
+    function renderVistaLote() {
+      const container = document.getElementById('lotContainer');
+      container.innerHTML = '';
+
+      if (!LOTE_DETALLES.length) {
+        container.innerHTML = '<div class="empty">No existen OC pendientes para mostrar.</div>';
+        return;
+      }
+
+      LOTE_DETALLES.forEach(function(d, idx) {
+        const block = document.createElement('section');
+        block.className = 'lot-oc';
+
+        const aprobadores = d.gestion && Array.isArray(d.gestion.aprobadores)
+          ? d.gestion.aprobadores.map(function(a) {
+              return (a.area || '-') + ': ' + (a.usuario || '-') + (a.fecha ? ' · ' + a.fecha : '');
+            }).join(' / ')
+          : 'Sin aprobación de área informada';
+
+        const rows = (d.lineas || []).map(function(line) {
+          return '<tr>' +
+            '<td class="center">' + escapeHtml(line.codigo || '') + '</td>' +
+            '<td class="product left">' + escapeHtml(line.producto || '') +
+              (line.consolidada ? '<br><small>Consolidada desde más de un área</small>' : '') + '</td>' +
+            '<td class="center">' + formatoNumero(line.cantidadOriginal) + '</td>' +
+            '<td class="center">' + formatoNumero(line.cantidadArea) + '</td>' +
+            '<td class="center"><strong>' + formatoNumero(line.cantidadJefatura) + '</strong></td>' +
+            '<td class="center">' + escapeHtml(line.unidad || '') + '</td>' +
+            '<td class="money">' + formatoMoneda(line.precio) + '</td>' +
+            '<td class="money">' + formatoMoneda(line.neto) + '</td>' +
+            '<td class="money"><strong>' + formatoMoneda(line.bruto) + '</strong></td>' +
+          '</tr>';
+        }).join('');
+
+        block.innerHTML = `
+          <div class="lot-oc-head">
+            <input class="lot-check" type="checkbox" data-lot-index="${idx}" onchange="actualizarSeleccionLote(${idx}, this.checked)">
+            <div><strong>PROVEEDOR</strong><br>${escapeHtml(d.proveedorOriginal || '-')}</div>
+            <div><strong>FECHA</strong><br>${escapeHtml(d.fechaEmision || '-')}</div>
+            <div><strong>LOTE</strong><br>${escapeHtml(d.lote || '-')}</div>
+            <div><strong>OC</strong><br>${escapeHtml(d.oc || '-')}</div>
+          </div>
+          <div class="lot-approved-by">✓ APROBADO POR ÁREA: ${escapeHtml(aprobadores)}</div>
+          <div class="table-wrap" style="border:0;border-radius:0">
+            <table>
+              <thead>
+                <tr>
+                  <th>CÓDIGO</th><th>PRODUCTO</th><th>CANTIDAD ORIGINAL</th><th>APROBADA ÁREA</th>
+                  <th>FINAL JEFATURA</th><th>UND</th><th>PRECIO UNITARIO</th><th>NETO</th><th>TOTAL</th>
+                </tr>
+              </thead>
+              <tbody>${rows}</tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="7" style="text-align:right;font-weight:900;background:#eef4f8">TOTAL OC</td>
+                  <td class="money" style="font-weight:900;background:#eef4f8">${formatoMoneda(d.neto || 0)}</td>
+                  <td class="money" style="font-weight:900;background:#eef4f8">${formatoMoneda(d.bruto || 0)}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <div class="lot-oc-actions">
+            <button class="btn btn-primary" onclick='abrirDetalle(${JSON.stringify({tipo:"NORMAL",empresa:d.empresa,oc:d.oc,id:""})})'>
+              REVISAR / EDITAR ESTA OC
+            </button>
+          </div>
+        `;
+        container.appendChild(block);
+      });
+      actualizarBotonSeleccionTodo();
+    }
+
+    function actualizarSeleccionLote(index, checked) {
+      if (checked) LOTE_SELECCIONADOS.add(index);
+      else LOTE_SELECCIONADOS.delete(index);
+      actualizarBotonSeleccionTodo();
+    }
+
+    function seleccionarTodoLote() {
+      const checks = Array.from(document.querySelectorAll('.lot-check'));
+      const allSelected = checks.length > 0 && checks.every(function(c) { return c.checked; });
+      checks.forEach(function(check, index) {
+        check.checked = !allSelected;
+        if (!allSelected) LOTE_SELECCIONADOS.add(index);
+        else LOTE_SELECCIONADOS.delete(index);
+      });
+      actualizarBotonSeleccionTodo();
+    }
+
+    function actualizarBotonSeleccionTodo() {
+      const checks = Array.from(document.querySelectorAll('.lot-check'));
+      const allSelected = checks.length > 0 && checks.every(function(c) { return c.checked; });
+      const btn = document.getElementById('btnSeleccionarTodo');
+      if (btn) btn.textContent = allSelected ? '☑ QUITAR SELECCIÓN' : '☐ SELECCIONAR TODO';
     }
 
     async function abrirDetalle(key) {
@@ -1153,4 +1561,4 @@
     }
   </script>
 </body>
-</html><!-- deploy jefatura 2026-10-21 -->
+</html>
