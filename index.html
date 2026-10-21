@@ -171,13 +171,54 @@
     }
     .tab-count { display: inline-flex; min-width: 28px; height: 28px; align-items: center; justify-content: center; margin-left: 7px; border-radius: 999px; background: rgba(255,255,255,.22); }
 
-    #tabSolicitudes { background: #184f78; color: #fff; border-color: #184f78; }
-    #tabReautorizaciones { background: #ef9b35; color: #3e2a00; border-color: #d8811c; }
-    #tabManuales { background: #7448a8; color: #fff; border-color: #623990; }
+    #tabSolicitudes { background: #005b96; color: #fff; border-color: #003f6b; }
+    #tabReautorizaciones { background: #ff9800; color: #2f2100; border-color: #d97706; }
+    #tabManuales { background: #7e3db5; color: #fff; border-color: #5e2a8a; }
 
     .tab:not(.active) { filter: saturate(.82) brightness(1.05); opacity: .92; }
-    .tab.active { box-shadow: inset 0 0 0 3px rgba(255,255,255,.38), 0 3px 10px rgba(16,24,40,.10); }
+    .tab.active { box-shadow: inset 0 0 0 4px rgba(255,255,255,.55), 0 5px 14px rgba(16,24,40,.18); transform: translateY(-1px); }
     .tab:not(.active) .tab-count { background: rgba(255,255,255,.62); color: #1d2939; }
+
+
+    .management-summary-v2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      align-items: start;
+    }
+    .management-half { min-width: 0; }
+    .management-half + .management-half { border-left: 6px solid var(--fondo); }
+    .management-summary-v2 h2 {
+      margin: 0;
+      padding: 11px 14px;
+      background: #184f78;
+      color: #fff;
+      font-size: 16px;
+      text-align: center;
+    }
+    .management-summary-v2 table { min-width: 0; width: 100%; }
+    .management-summary-v2 td {
+      padding: 8px 10px;
+      font-size: 15px;
+      border-bottom: 1px solid #e4e9ee;
+    }
+    .management-summary-v2 td:first-child { font-weight: 700; }
+    .management-summary-v2 .amount-cell { text-align: right; font-weight: 900; }
+    .management-summary-v2 .highlight-pending td { background: #fff0df; }
+    .management-summary-v2 .highlight-total td { background: #e1f0db; }
+    .management-data-note {
+      grid-column: 1 / -1;
+      padding: 8px 12px;
+      background: #f7f9fb;
+      color: #667085;
+      font-size: 12px;
+      text-align: center;
+      border-top: 1px solid #e4e9ee;
+    }
+    @media (max-width: 800px) {
+      .management-summary-v2 { grid-template-columns: 1fr; }
+      .management-half + .management-half { border-left: 0; border-top: 8px solid var(--fondo); }
+    }
 
     .management-summary {
       margin-top: 16px;
@@ -552,6 +593,13 @@
       <div id="userLine" class="user-line">Identificando usuario...</div>
     </section>
 
+    <nav class="tabs" aria-label="Bandejas de Jefatura">
+      <button id="tabSolicitudes" class="tab active" onclick="cambiarTab('solicitudes')">SOLICITUDES <span id="countSolicitudes" class="tab-count">0</span></button>
+      <button id="tabReautorizaciones" class="tab" onclick="cambiarTab('reautorizaciones')">REAUTORIZACIONES <span id="countReautorizaciones" class="tab-count">0</span></button>
+      <button id="tabManuales" class="tab" onclick="cambiarTab('manuales')">OC MANUALES <span id="countManuales" class="tab-count">0</span></button>
+    </nav>
+
+
     <section class="summary-section">
       <div class="summary-grid">
         <div class="summary-box">
@@ -587,38 +635,45 @@
       </div>
     </section>
 
-    <section class="management-summary">
-      <h2>RESUMEN DE GESTIÓN DEL LOTE VIGENTE</h2>
-      <div class="management-summary-note">
-        Muestra la gestión informada por cada OC pendiente y su monto total con IVA. No reparte montos entre áreas cuando una misma OC reúne más de un área.
+    <section class="management-summary management-summary-v2">
+      <div class="management-half">
+        <h2>RESUMEN ECONÓMICO JEFATURA</h2>
+        <div class="management-summary-table">
+          <table class="economic-table">
+            <tbody>
+              <tr><td>TOTAL SOLICITADO</td><td id="ecoSolicitado" class="amount-cell">—</td></tr>
+              <tr><td>TOTAL APROBADO POR ÁREAS</td><td id="ecoAprobadoAreas" class="amount-cell">—</td></tr>
+              <tr><td>AJUSTE ÁREAS</td><td id="ecoAjusteAreas" class="amount-cell">—</td></tr>
+              <tr class="highlight-pending"><td>PENDIENTE DE AUTORIZAR</td><td id="ecoPendiente" class="amount-cell">$0</td></tr>
+              <tr><td>AJUSTE JEFATURA</td><td id="ecoAjusteJefatura" class="amount-cell">—</td></tr>
+              <tr class="highlight-total"><td><strong>TOTAL AUTORIZADO POR JEFATURA</strong></td><td id="ecoTotalAutorizado" class="amount-cell"><strong>—</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div class="management-summary-table">
-        <table>
-          <thead>
-            <tr>
-              <th>OC</th>
-              <th>PROVEEDOR</th>
-              <th>ÁREA / ENCARGADO</th>
-              <th>GESTIÓN</th>
-              <th>MONTO CON IVA</th>
-            </tr>
-          </thead>
-          <tbody id="gestionLoteBody">
-            <tr><td colspan="5" class="center">Cargando gestión...</td></tr>
-          </tbody>
-        </table>
+      <div class="management-half">
+        <h2>ESTADO DE REVISIÓN</h2>
+        <div class="management-summary-table">
+          <table class="review-table">
+            <tbody>
+              <tr class="highlight-pending"><td>OC PENDIENTES</td><td id="revPendientes" class="amount-cell">0</td></tr>
+              <tr><td>OC AUTORIZADAS</td><td id="revAutorizadas" class="amount-cell">0</td></tr>
+              <tr><td>OC RECHAZADAS</td><td id="revRechazadas" class="amount-cell">0</td></tr>
+              <tr><td>TOTAL REVISADAS</td><td id="revRevisadas" class="amount-cell">0</td></tr>
+              <tr><td>TOTAL OC DEL LOTE</td><td id="revTotalLote" class="amount-cell">0</td></tr>
+              <tr><td>OTRAS SOLICITUDES</td><td id="revOtras" class="amount-cell">0</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="management-data-note">
+        Los montos históricos completos se completarán cuando MAESTRO los entregue directamente por API. No se estiman valores.
       </div>
     </section>
 
     <section class="instructions">
       <strong>Cómo trabajar:</strong> 1) elige una bandeja, 2) pulsa <strong>REVISAR</strong>, 3) comprueba productos, gestión y montos, 4) autoriza, rechaza o edita cantidades cuando corresponda.
     </section>
-
-    <nav class="tabs" aria-label="Bandejas de Jefatura">
-      <button id="tabSolicitudes" class="tab active" onclick="cambiarTab('solicitudes')">SOLICITUDES <span id="countSolicitudes" class="tab-count">0</span></button>
-      <button id="tabReautorizaciones" class="tab" onclick="cambiarTab('reautorizaciones')">REAUTORIZACIONES <span id="countReautorizaciones" class="tab-count">0</span></button>
-      <button id="tabManuales" class="tab" onclick="cambiarTab('manuales')">OC MANUALES <span id="countManuales" class="tab-count">0</span></button>
-    </nav>
 
     <div class="list-head">
       <div>
@@ -831,38 +886,29 @@
     }
 
     function renderGestionLote() {
-      const body = document.getElementById('gestionLoteBody');
-      if (!body) return;
-      body.innerHTML = '';
+      if (!PANEL) return;
+      const r = PANEL.resumen || {};
+      const pendientes = Number(r.pendientesLote || 0);
+      const autorizadas = Number(r.autorizadasLote || 0);
+      const rechazadas = Number(r.rechazadasLote || 0);
+      const totalLote = Number(r.totalOcLote || 0);
+      const revisadas = autorizadas + rechazadas;
+      const otras = Number(r.reautorizaciones || 0) + Number(r.manuales || 0);
 
-      const solicitudes = PANEL && Array.isArray(PANEL.solicitudes) ? PANEL.solicitudes : [];
-      if (!solicitudes.length) {
-        body.innerHTML = '<tr><td colspan="5" class="center">No existen OC pendientes en el lote vigente.</td></tr>';
-        return;
-      }
+      setText('ecoPendiente', formatoMoneda(r.montoPendienteLote || 0));
 
-      solicitudes.forEach(function(item) {
-        const tr = document.createElement('tr');
-        const responsables = item.aprobadoresArea || 'Sin gestión de área informada';
-        tr.innerHTML =
-          '<td class="center"><strong>' + escapeHtml(item.oc || '-') + '</strong></td>' +
-          '<td>' + escapeHtml(item.proveedor || item.proveedorOriginal || '-') + '</td>' +
-          '<td>' + escapeHtml(responsables) + '</td>' +
-          '<td>' + escapeHtml(item.gestion || 'APROBACIÓN DE LOTE') +
-            (item.observacionArea ? '<br><small>' + escapeHtml(item.observacionArea) + '</small>' : '') +
-          '</td>' +
-          '<td class="amount-cell">' + formatoMoneda(item.bruto || 0) + '</td>';
-        body.appendChild(tr);
-      });
+      setText('ecoSolicitado', '—');
+      setText('ecoAprobadoAreas', '—');
+      setText('ecoAjusteAreas', '—');
+      setText('ecoAjusteJefatura', '—');
+      setText('ecoTotalAutorizado', '—');
 
-      const total = solicitudes.reduce(function(sum, item) {
-        return sum + Number(item.bruto || 0);
-      }, 0);
-      const totalRow = document.createElement('tr');
-      totalRow.innerHTML =
-        '<td colspan="4" style="text-align:right;font-weight:900;background:#eef4f8">TOTAL PENDIENTE DEL LOTE</td>' +
-        '<td class="amount-cell" style="background:#eef4f8">' + formatoMoneda(total) + '</td>';
-      body.appendChild(totalRow);
+      setText('revPendientes', pendientes);
+      setText('revAutorizadas', autorizadas);
+      setText('revRechazadas', rechazadas);
+      setText('revRevisadas', revisadas);
+      setText('revTotalLote', totalLote);
+      setText('revOtras', otras);
     }
 
     function cambiarTab(tab) {
