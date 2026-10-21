@@ -296,6 +296,90 @@
       font-weight: 700;
       font-size: 14px;
     }
+
+    .lot-simulation {
+      margin-top: 14px;
+      background: #fff;
+      border: 1px solid #cbd8e3;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 3px 12px rgba(16,24,40,.07);
+    }
+    .lot-simulation h3 {
+      margin: 0;
+      padding: 10px 14px;
+      background: #184f78;
+      color: #fff;
+      text-align: center;
+      font-size: 16px;
+    }
+    .lot-sim-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0,1fr));
+    }
+    .lot-sim-box {
+      padding: 12px 10px;
+      border-right: 1px solid #e1e7ed;
+      text-align: center;
+      background: #fff;
+    }
+    .lot-sim-box:last-child { border-right: 0; }
+    .lot-sim-box span {
+      display: block;
+      color: #5e6b7a;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+    .lot-sim-box strong {
+      display: block;
+      margin-top: 7px;
+      font-size: 18px;
+    }
+    .lot-sim-box.sim-highlight { background: #fff4df; }
+    .lot-sim-box.sim-total { background: #e2f1dc; }
+
+    .lot-actions-row {
+      padding: 10px 14px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      background: #fafcfd;
+      border-top: 1px solid #e4e9ee;
+    }
+    .lot-actions-row .btn {
+      min-height: 42px;
+      padding: 9px 18px;
+      min-width: 125px;
+    }
+    .btn-edit { background: #dfeaf4; color: #17476a; border: 1px solid #a9c1d5; }
+    .btn-authorize { background: #18a957; color: #fff; }
+    .btn-reject { background: #d93636; color: #fff; }
+    .lot-qty {
+      width: 95px;
+      min-height: 36px;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      padding: 5px 7px;
+      text-align: center;
+      font-weight: 900;
+      background: transparent;
+    }
+    .lot-qty.editable {
+      background: #e4f6e8;
+      border: 2px solid #66b982;
+      color: #173a24;
+    }
+
+    @media (max-width: 1100px) {
+      .lot-sim-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
+    }
+    @media (max-width: 700px) {
+      .lot-sim-grid { grid-template-columns: 1fr 1fr; }
+      .lot-actions-row { flex-direction: column; }
+      .lot-actions-row .btn { width: 100%; }
+    }
+
     .lot-oc {
       margin-top: 16px;
       background: #fff;
@@ -657,11 +741,23 @@
           <button class="btn btn-purple" onclick="cerrarLote()">VOLVER AL INICIO</button>
           <button class="btn btn-refresh" onclick="cargarVistaLote()">↻ ACTUALIZAR LOTE</button>
           <button id="btnSeleccionarTodo" class="btn btn-select" onclick="seleccionarTodoLote()">☐ SELECCIONAR TODO</button>
-          <button id="btnAutorizarSeleccionadas" class="btn btn-yellow bulk-disabled" disabled>AUTORIZAR SELECCIONADAS</button>
+          <button id="btnAutorizarSeleccionadas" class="btn btn-yellow" onclick="autorizarSeleccionadas()" disabled>AUTORIZAR SELECCIONADAS</button>
         </div>
-        <div class="bulk-note">
-          La selección múltiple queda preparada visualmente. La autorización masiva se habilitará cuando exista una operación atómica en MAESTRO para evitar decisiones parciales.
+        <div class="bulk-note" id="bulkNote">
+          Selecciona una o varias OC. La autorización masiva se guardará en MAESTRO como una sola operación atómica.
         </div>
+
+        <section class="lot-simulation">
+          <h3>SIMULACIÓN ECONÓMICA DEL LOTE</h3>
+          <div class="lot-sim-grid">
+            <div class="lot-sim-box"><span>Total solicitado</span><strong id="simSolicitado">$0</strong></div>
+            <div class="lot-sim-box"><span>Aprobado áreas</span><strong id="simAprobadoAreas">$0</strong></div>
+            <div class="lot-sim-box"><span>Ajuste áreas</span><strong id="simAjusteAreas">$0</strong></div>
+            <div class="lot-sim-box sim-highlight"><span>Pendiente / simulación</span><strong id="simPendiente">$0</strong></div>
+            <div class="lot-sim-box"><span>Ajuste Jefatura</span><strong id="simAjusteJefatura">$0</strong></div>
+            <div class="lot-sim-box sim-total"><span>Total final Jefatura</span><strong id="simTotalFinal">$0</strong></div>
+          </div>
+        </section>
       </div>
 
       <div id="lotLoading" class="loading lot-loading">
@@ -1029,14 +1125,15 @@
             }).join(' / ')
           : 'Sin aprobación de área informada';
 
-        const rows = (d.lineas || []).map(function(line) {
+        const rows = (d.lineas || []).map(function(line, lineIndex) {
+          line._lineIndex = lineIndex;
           return '<tr>' +
             '<td class="center">' + escapeHtml(line.codigo || '') + '</td>' +
             '<td class="product left">' + escapeHtml(line.producto || '') +
               (line.consolidada ? '<br><small>Consolidada desde más de un área</small>' : '') + '</td>' +
             '<td class="center">' + formatoNumero(line.cantidadOriginal) + '</td>' +
             '<td class="center">' + formatoNumero(line.cantidadArea) + '</td>' +
-            '<td class="center"><strong>' + formatoNumero(line.cantidadJefatura) + '</strong></td>' +
+            '<td class="center"><input class="lot-qty" data-oc-index="' + idx + '" data-line-index="' + line._lineIndex + '" type="number" min="0" step="any" value="' + escapeHtml(String(line.cantidadJefatura)) + '" readonly oninput="recalcularSimulacionLote()"></td>' +
             '<td class="center">' + escapeHtml(line.unidad || '') + '</td>' +
             '<td class="money">' + formatoMoneda(line.precio) + '</td>' +
             '<td class="money">' + formatoMoneda(line.neto) + '</td>' +
@@ -1071,15 +1168,16 @@
               </tfoot>
             </table>
           </div>
-          <div class="lot-oc-actions">
-            <button class="btn btn-primary" onclick='abrirDetalle(${JSON.stringify({tipo:"NORMAL",empresa:d.empresa,oc:d.oc,id:""})})'>
-              REVISAR / EDITAR ESTA OC
-            </button>
+          <div class="lot-actions-row">
+            <button class="btn btn-edit" id="lotEdit-${idx}" onclick="editarOcLote(${idx})">EDITAR</button>
+            <button class="btn btn-authorize" onclick="autorizarOcLote(${idx})">AUTORIZAR</button>
+            <button class="btn btn-reject" onclick="rechazarOcLote(${idx})">RECHAZAR</button>
           </div>
         `;
         container.appendChild(block);
       });
       actualizarBotonSeleccionTodo();
+      recalcularSimulacionLote();
     }
 
     function actualizarSeleccionLote(index, checked) {
@@ -1104,6 +1202,230 @@
       const allSelected = checks.length > 0 && checks.every(function(c) { return c.checked; });
       const btn = document.getElementById('btnSeleccionarTodo');
       if (btn) btn.textContent = allSelected ? '☑ QUITAR SELECCIÓN' : '☐ SELECCIONAR TODO';
+
+      const bulk = document.getElementById('btnAutorizarSeleccionadas');
+      if (bulk) {
+        bulk.disabled = LOTE_SELECCIONADOS.size === 0 || DECISION_EN_CURSO;
+        bulk.textContent = LOTE_SELECCIONADOS.size
+          ? 'AUTORIZAR SELECCIONADAS (' + LOTE_SELECCIONADOS.size + ')'
+          : 'AUTORIZAR SELECCIONADAS';
+      }
+    }
+
+
+    function editarOcLote(index) {
+      const inputs = Array.from(document.querySelectorAll('.lot-qty[data-oc-index="' + index + '"]'));
+      if (!inputs.length) return;
+      const editing = inputs.some(function(input) { return input.readOnly; });
+
+      inputs.forEach(function(input) {
+        input.readOnly = !editing;
+        input.classList.toggle('editable', editing);
+      });
+
+      const btn = document.getElementById('lotEdit-' + index);
+      if (btn) btn.textContent = editing ? 'FINALIZAR EDICIÓN' : 'EDITAR';
+      if (editing) inputs[0].focus();
+      recalcularSimulacionLote();
+    }
+
+    function cantidadesOcLote(index) {
+      const d = LOTE_DETALLES[index];
+      if (!d) return [];
+
+      return (d.lineas || []).map(function(line, lineIndex) {
+        const input = document.querySelector('.lot-qty[data-oc-index="' + index + '"][data-line-index="' + lineIndex + '"]');
+        const value = input ? Number(String(input.value || '').replace(',', '.')) : Number(line.cantidadJefatura || 0);
+        return {
+          grupoId: line.grupoId,
+          cantidad: value
+        };
+      });
+    }
+
+    function validarCantidadesOcLote(index) {
+      const cantidades = cantidadesOcLote(index);
+      const invalid = cantidades.some(function(item) {
+        return !Number.isFinite(item.cantidad) || item.cantidad < 0;
+      });
+      if (invalid) throw new Error('Revisa las cantidades de ' + (LOTE_DETALLES[index].oc || 'la OC') + '.');
+      return cantidades;
+    }
+
+    async function autorizarOcLote(index) {
+      if (DECISION_EN_CURSO) return;
+      const d = LOTE_DETALLES[index];
+      if (!d) return;
+
+      let cantidades;
+      try {
+        cantidades = validarCantidadesOcLote(index);
+      } catch (error) {
+        aviso(error.message);
+        return;
+      }
+
+      const total = totalOcSimulada(index);
+      if (!window.confirm('¿Autorizar ' + d.oc + '?\n\nTotal simulado: ' + formatoMoneda(total))) return;
+
+      await enviarDecisionLoteIndividual(index, 'AUTORIZAR', '', cantidades);
+    }
+
+    async function rechazarOcLote(index) {
+      if (DECISION_EN_CURSO) return;
+      const d = LOTE_DETALLES[index];
+      if (!d) return;
+
+      const motivo = window.prompt('Motivo del rechazo de ' + d.oc + ':', '');
+      if (motivo === null) return;
+      if (!String(motivo).trim()) {
+        aviso('Debes indicar el motivo del rechazo.');
+        return;
+      }
+      if (!window.confirm('¿Confirmas el RECHAZO de ' + d.oc + '?')) return;
+
+      await enviarDecisionLoteIndividual(index, 'RECHAZAR', String(motivo).trim(), []);
+    }
+
+    async function enviarDecisionLoteIndividual(index, decision, observacion, cantidades) {
+      const d = LOTE_DETALLES[index];
+      DECISION_EN_CURSO = true;
+      actualizarBotonSeleccionTodo();
+
+      try {
+        const payload = {
+          tipo: 'NORMAL',
+          empresa: d.empresa,
+          oc: d.oc,
+          huella: d.huella,
+          decision: decision,
+          observacion: observacion || '',
+          cantidades: decision === 'AUTORIZAR' ? cantidades : []
+        };
+        const text = JSON.stringify(payload);
+        const url = CONFIG.API_BASE_URL + '?api=jefatura&accion=decidir&confirmar=SI' +
+          '&token=' + encodeURIComponent(PANEL.token || '') +
+          '&payload=' + encodeURIComponent(text);
+
+        const response = await cargarJsonp(url);
+        if (!response || response.ok !== true) {
+          throw new Error(response && response.error ? response.error : 'No fue posible registrar la decisión.');
+        }
+
+        aviso(response.data && response.data.mensaje ? response.data.mensaje : 'Decisión registrada.');
+        await cargarPanel(PANEL.empresa);
+        await cargarVistaLote();
+      } catch (error) {
+        aviso(error && error.message ? error.message : String(error));
+      } finally {
+        DECISION_EN_CURSO = false;
+        actualizarBotonSeleccionTodo();
+      }
+    }
+
+    function totalOcSimulada(index) {
+      const d = LOTE_DETALLES[index];
+      if (!d) return 0;
+      let neto = 0;
+
+      (d.lineas || []).forEach(function(line, lineIndex) {
+        const input = document.querySelector('.lot-qty[data-oc-index="' + index + '"][data-line-index="' + lineIndex + '"]');
+        const qty = input ? Number(String(input.value || '').replace(',', '.')) : Number(line.cantidadJefatura || 0);
+        if (Number.isFinite(qty) && qty >= 0) {
+          neto += qty * Number(line.precio || 0);
+        }
+      });
+
+      return neto * 1.19;
+    }
+
+    function recalcularSimulacionLote() {
+      if (!PANEL) return;
+      const r = PANEL.resumen || {};
+
+      let pendienteSimulado = 0;
+      LOTE_DETALLES.forEach(function(d, index) {
+        pendienteSimulado += totalOcSimulada(index);
+      });
+
+      const totalAutorizadoPrevio = Number(r.totalAutorizadoJefaturaLote || 0);
+      const totalFinal = totalAutorizadoPrevio + pendienteSimulado;
+      const aprobadoAreas = Number(r.totalAprobadoAreasLote || 0);
+      const ajusteJefatura = totalFinal - aprobadoAreas;
+
+      setText('simSolicitado', formatoMoneda(r.totalSolicitadoLote || 0));
+      setText('simAprobadoAreas', formatoMoneda(aprobadoAreas));
+      setText('simAjusteAreas', formatoMontoFirmado(r.ajusteAreasLote || 0));
+      setText('simPendiente', formatoMoneda(pendienteSimulado));
+      setText('simAjusteJefatura', formatoMontoFirmado(ajusteJefatura));
+      setText('simTotalFinal', formatoMoneda(totalFinal));
+    }
+
+    async function autorizarSeleccionadas() {
+      if (DECISION_EN_CURSO || !LOTE_SELECCIONADOS.size) return;
+
+      const indices = Array.from(LOTE_SELECCIONADOS).sort(function(a,b){ return a-b; });
+      const solicitudes = [];
+
+      try {
+        indices.forEach(function(index) {
+          const d = LOTE_DETALLES[index];
+          solicitudes.push({
+            oc: d.oc,
+            huella: d.huella,
+            cantidades: validarCantidadesOcLote(index)
+          });
+        });
+      } catch (error) {
+        aviso(error.message);
+        return;
+      }
+
+      const total = indices.reduce(function(sum, index) {
+        return sum + totalOcSimulada(index);
+      }, 0);
+
+      if (!window.confirm(
+        '¿Autorizar las ' + solicitudes.length + ' OC seleccionadas?\n\n' +
+        'Total simulado de la selección: ' + formatoMoneda(total) + '\n\n' +
+        'Se guardarán juntas en una sola operación.'
+      )) return;
+
+      DECISION_EN_CURSO = true;
+      actualizarBotonSeleccionTodo();
+
+      try {
+        const payload = {
+          empresa: PANEL.empresa,
+          solicitudes: solicitudes
+        };
+        const text = JSON.stringify(payload);
+        if (text.length > 12000) {
+          throw new Error('La selección es demasiado extensa. Autoriza menos OC por operación.');
+        }
+
+        const url = CONFIG.API_BASE_URL + '?api=jefatura&accion=decidir_lote&confirmar=SI' +
+          '&token=' + encodeURIComponent(PANEL.token || '') +
+          '&payload=' + encodeURIComponent(text);
+
+        const response = await cargarJsonp(url);
+        if (!response || response.ok !== true) {
+          throw new Error(response && response.error ? response.error : 'No fue posible autorizar las OC seleccionadas.');
+        }
+
+        aviso(response.data && response.data.mensaje
+          ? response.data.mensaje
+          : 'OC seleccionadas autorizadas correctamente.');
+
+        await cargarPanel(PANEL.empresa);
+        await cargarVistaLote();
+
+      } catch (error) {
+        aviso(error && error.message ? error.message : String(error));
+      } finally {
+        DECISION_EN_CURSO = false;
+        actualizarBotonSeleccionTodo();
+      }
     }
 
     async function abrirDetalle(key) {
