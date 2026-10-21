@@ -334,8 +334,11 @@
     .lot-sim-box strong {
       display: block;
       margin-top: 7px;
-      font-size: 18px;
-    }
+      font-size: 20px;
+      line-height: 1.1;
+      font-weight: 900;
+      color: #184f78;
+    
     .lot-sim-box.sim-highlight { background: #fff4df; }
     .lot-sim-box.sim-total { background: #e2f1dc; }
 
@@ -397,14 +400,21 @@
       background: #edf4f8;
       border-bottom: 1px solid #cfdae3;
     }
-    .lot-oc-head strong { color: #143b58; }
+    .lot-oc-head strong {
+      color: #143b58;
+      font-weight: 900;
+      letter-spacing: .01em;
+    }
     .lot-check { width: 23px; height: 23px; }
     .lot-approved-by {
-      padding: 9px 14px;
-      background: #e9f7ed;
-      color: #185c36;
-      font-weight: 800;
+      padding: 10px 14px;
+      background: #e8f0f7;
+      color: #184f78;
+      font-weight: 900;
       font-size: 14px;
+      text-align: center;
+      border-top: 1px solid #cbd8e3;
+      border-bottom: 1px solid #cbd8e3;
     }
     .lot-oc-actions { padding: 10px 14px; display: flex; justify-content: flex-end; gap: 10px; background: #fafcfd; }
     .lot-loading { margin-top: 20px; }
@@ -1149,7 +1159,7 @@
             <div><strong>LOTE</strong><br>${escapeHtml(d.lote || '-')}</div>
             <div><strong>OC</strong><br>${escapeHtml(d.oc || '-')}</div>
           </div>
-          <div class="lot-approved-by">✓ APROBADO POR ÁREA: ${escapeHtml(aprobadores)}</div>
+          <div class="lot-approved-by">APROBADO POR ÁREA: ${escapeHtml(aprobadores)}</div>
           <div class="table-wrap" style="border:0;border-radius:0">
             <table>
               <thead>
