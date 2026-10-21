@@ -765,7 +765,7 @@
     </section>
 
     <nav class="tabs" aria-label="Bandejas de Jefatura">
-      <button id="tabSolicitudes" class="tab active" onclick="abrirSolicitudesDesdeTab()">SOLICITUDES <span id="countSolicitudes" class="tab-count">0</span></button>
+      <button id="tabSolicitudes" class="tab active" onclick="abrirLote()">SOLICITUDES <span id="countSolicitudes" class="tab-count">0</span></button>
       <button id="tabReautorizaciones" class="tab" onclick="abrirReautorizacionesDesdeTab()">REAUTORIZACIONES <span id="countReautorizaciones" class="tab-count">0</span></button>
       <button id="tabManuales" class="tab" onclick="abrirManualesDesdeTab()">OC MANUALES <span id="countManuales" class="tab-count">0</span></button>
     </nav>
@@ -1078,41 +1078,22 @@
     }
 
     function renderLista() {
-      const container = document.getElementById('cardsContainer');
-      const empty = document.getElementById('emptyBox');
-      container.innerHTML = '';
-      if (!PANEL) return;
-
       const titles = {
         solicitudes: ['Solicitudes del lote vigente', 'Pendientes de decisión de Jefatura provenientes de MATRIZ OC.'],
         reautorizaciones: ['Reautorizaciones', 'Selecciona la bandeja naranjo para revisar la solicitud pendiente.'],
         manuales: ['OC manuales', 'Selecciona la bandeja morada para revisar la solicitud pendiente.']
       };
-      setText('listTitle', titles[TAB_ACTUAL][0]);
-      setText('listSubtitle', titles[TAB_ACTUAL][1]);
 
-      const search = normalizar(document.getElementById('buscador').value);
+      const current = titles[TAB_ACTUAL] || titles.solicitudes;
+      setText('sectionTitle', current[0]);
+      setText('sectionSubtitle', current[1]);
 
-      if (TAB_ACTUAL === 'solicitudes') {
-        const solicitudes = (PANEL.solicitudes || []).filter(function(item) {
-          if (!search) return true;
-          return normalizar([item.oc, item.proveedor, item.proveedorOriginal, item.gestion, item.lote].join(' ')).indexOf(search) >= 0;
-        });
+      const container = document.getElementById('cardsContainer');
+      const empty = document.getElementById('emptyState');
 
-        empty.style.display = solicitudes.length ? 'none' : 'block';
-        container.innerHTML = '';
-        return;
-      }
-
-      const list = listaActual().filter(function(item) {
-        if (!search) return true;
-        return normalizar([item.oc, item.proveedor, item.proveedorOriginal, item.gestion, item.lote].join(' ')).indexOf(search) >= 0;
-      });
-
-      empty.style.display = list.length ? 'none' : 'block';
-      container.innerHTML = '';
+      if (container) container.innerHTML = '';
+      if (empty) empty.style.display = 'none';
     }
-
 
     function marcarTabActivo(tab) {
       TAB_ACTUAL = tab;
